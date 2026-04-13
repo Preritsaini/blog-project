@@ -1,26 +1,58 @@
 @import "tailwindcss";
 
+/* ─── Design tokens ──────────────────────────────────────────────────────── */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Color palette */
+  --color-indigo-deep: #2e2b5f;      /* deep indigo — primary brand */
+  --color-gold-soft: #c9a84c;        /* soft gold — accent */
+  --color-off-white: #f5f3ee;        /* off-white — light background */
+  --color-charcoal: #2d2d2d;         /* charcoal — body text */
+
+  /* Semantic aliases */
+  --background: var(--color-off-white);
+  --foreground: var(--color-charcoal);
+
+  /* Typography scale (fluid) */
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg:   1.125rem;  /* 18px */
+  --text-xl:   1.25rem;   /* 20px */
+  --text-2xl:  1.5rem;    /* 24px */
+  --text-3xl:  1.875rem;  /* 30px */
+  --text-4xl:  2.25rem;   /* 36px */
+  --text-5xl:  3rem;      /* 48px */
+
+  /* Spacing scale */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
 }
 
 @theme inline {
+  /* Expose palette to Tailwind utilities */
+  --color-indigo-deep: var(--color-indigo-deep);
+  --color-gold-soft:   var(--color-gold-soft);
+  --color-off-white:   var(--color-off-white);
+  --color-charcoal:    var(--color-charcoal);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Font families wired from Next.js font CSS variables */
+  --font-heading: var(--font-cormorant);
+  --font-sans:    var(--font-inter);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
