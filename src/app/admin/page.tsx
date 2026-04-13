@@ -29,6 +29,17 @@ export default function AdminDashboardPage() {
             Create, edit, and manage coaching services.
           </p>
         </Link>
+        <Link
+          href="/admin/media"
+          className="block rounded-xl border border-[var(--color-indigo-deep)]/15 bg-white p-6 hover:border-[var(--color-indigo-deep)]/40 hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-[var(--color-indigo-deep)]"
+        >
+          <h2 className="font-serif text-xl font-semibold text-[var(--color-indigo-deep)] mb-2">
+            Media Library
+          </h2>
+          <p className="text-sm text-[var(--color-charcoal)]/70">
+            Upload and manage photos used across the site.
+          </p>
+        </Link>
       </div>
     </div>
   )
