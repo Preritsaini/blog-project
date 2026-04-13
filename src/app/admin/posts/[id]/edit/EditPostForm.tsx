@@ -4,6 +4,7 @@ import { useActionState, useState } from 'react'
 import { updatePost, type PostFormState } from '@/actions/posts'
 import { generateSlug } from '@/lib/slug'
 import PostEditor from '@/components/admin/PostEditor'
+import ImageUploader from '@/components/admin/ImageUploader'
 import SubmitButton from '@/components/ui/SubmitButton'
 import type { BlogPost } from '@/lib/firestore/posts'
 
@@ -18,6 +19,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
   const [state, formAction] = useActionState(boundAction, initialState)
   const [slug, setSlug] = useState(post.slug)
   const [body, setBody] = useState(post.body)
+  const [coverImage, setCoverImage] = useState(post.coverImage)
 
   function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSlug(generateSlug(e.target.value))
@@ -85,15 +87,14 @@ export default function EditPostForm({ post }: EditPostFormProps) {
         )}
       </div>
 
-      {/* Cover Image */}
+      {/* Cover Image — upload to Firebase Storage */}
       <div>
-        <label htmlFor="coverImage" className={labelClass}>Cover Image URL</label>
-        <input
-          id="coverImage"
-          name="coverImage"
-          type="url"
-          defaultValue={post.coverImage}
-          className={inputClass}
+        <input type="hidden" name="coverImage" value={coverImage} />
+        <ImageUploader
+          value={coverImage}
+          onChange={setCoverImage}
+          folder="posts"
+          label="Cover Image"
         />
         {state.errors?.coverImage && (
           <p className={errorClass}>{state.errors.coverImage[0]}</p>

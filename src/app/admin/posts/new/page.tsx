@@ -4,6 +4,7 @@ import { useActionState, useState } from 'react'
 import { createPost, type PostFormState } from '@/actions/posts'
 import { generateSlug } from '@/lib/slug'
 import PostEditor from '@/components/admin/PostEditor'
+import ImageUploader from '@/components/admin/ImageUploader'
 import SubmitButton from '@/components/ui/SubmitButton'
 
 const initialState: PostFormState = {}
@@ -12,6 +13,7 @@ export default function NewPostPage() {
   const [state, formAction] = useActionState(createPost, initialState)
   const [slug, setSlug] = useState('')
   const [body, setBody] = useState('')
+  const [coverImage, setCoverImage] = useState('')
 
   function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const title = e.target.value
@@ -83,14 +85,14 @@ export default function NewPostPage() {
           )}
         </div>
 
-        {/* Cover Image */}
+        {/* Cover Image — upload to Firebase Storage */}
         <div>
-          <label htmlFor="coverImage" className={labelClass}>Cover Image URL</label>
-          <input
-            id="coverImage"
-            name="coverImage"
-            type="url"
-            className={inputClass}
+          <input type="hidden" name="coverImage" value={coverImage} />
+          <ImageUploader
+            value={coverImage}
+            onChange={setCoverImage}
+            folder="posts"
+            label="Cover Image"
           />
           {state.errors?.coverImage && (
             <p className={errorClass}>{state.errors.coverImage[0]}</p>
