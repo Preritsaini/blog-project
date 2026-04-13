@@ -11,6 +11,7 @@ import {
 export type { BlogPost }
 
 function db() {
+  if (!adminApp) return null
   return getFirestore(adminApp)
 }
 
@@ -35,7 +36,9 @@ function docToBlogPost(
 
 /** Fetches the 3 most recently published posts. */
 export async function getRecentPosts(limit = 3): Promise<BlogPost[]> {
-  const snap = await db()
+  const database = db()
+  if (!database) return []
+  const snap = await database
     .collection('posts')
     .where('published', '==', true)
     .orderBy('publishedAt', 'desc')
@@ -46,7 +49,9 @@ export async function getRecentPosts(limit = 3): Promise<BlogPost[]> {
 
 /** Fetches all published posts ordered by publishedAt desc. */
 export async function getAllPosts(): Promise<BlogPost[]> {
-  const snap = await db()
+  const database = db()
+  if (!database) return []
+  const snap = await database
     .collection('posts')
     .where('published', '==', true)
     .orderBy('publishedAt', 'desc')
@@ -56,7 +61,9 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 
 /** Fetches a single published post by slug. */
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  const snap = await db()
+  const database = db()
+  if (!database) return null
+  const snap = await database
     .collection('posts')
     .where('published', '==', true)
     .where('slug', '==', slug)
@@ -68,7 +75,9 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
 
 /** Returns up to `limit` published posts sharing at least one tag with the given post. */
 export async function getRelatedPosts(post: BlogPost, limit = 3): Promise<BlogPost[]> {
-  const snap = await db()
+  const database = db()
+  if (!database) return []
+  const snap = await database
     .collection('posts')
     .where('published', '==', true)
     .get()

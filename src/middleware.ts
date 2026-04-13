@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { auth } from 'firebase-admin/auth'
+import { getAuth } from 'firebase-admin/auth'
 import { adminApp } from '@/lib/firebase/admin'
 import { shouldRedirectToLogin } from '@/lib/middleware-utils'
 
@@ -15,6 +15,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  if (!adminApp) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Middleware: Skipping auth verification — Firebase Admin SDK not configured.')
+      return NextResponse.next()
+    }
+    return NextResponse.redirect(new URL('/admin/login', request.url))
+  }
+
   const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME)?.value
 
   if (!sessionCookie) {
@@ -22,7 +30,7 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    await auth(adminApp).verifySessionCookie(sessionCookie, true)
+    await getAuth(adminApp).verifySessionCookie(sessionCookie, true)
     return NextResponse.next()
   } catch {
     // Cookie is invalid or expired — delete it and redirect

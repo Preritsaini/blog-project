@@ -6,6 +6,7 @@ import { filterActiveServices, type Service } from './utils'
 export type { Service }
 
 function db() {
+  if (!adminApp) return null
   return getFirestore(adminApp)
 }
 
@@ -28,7 +29,9 @@ function docToService(
 
 /** Fetches services where active === true. */
 export async function getActiveServices(): Promise<Service[]> {
-  const snap = await db()
+  const database = db()
+  if (!database) return []
+  const snap = await database
     .collection('services')
     .where('active', '==', true)
     .get()

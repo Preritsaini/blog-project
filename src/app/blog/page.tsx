@@ -1,28 +1,25 @@
 import type { Metadata } from 'next'
 import BlogCard from '@/components/ui/BlogCard'
 import { getAllPosts } from '@/lib/firestore/posts'
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://example.com'
+import { siteConfig } from '@/lib/config'
 
 export const metadata: Metadata = {
   title: 'Blog',
   description:
     'Explore spiritual insights, psychic guidance, and coaching wisdom from Prateeksha.',
-  alternates: { canonical: `${siteUrl}/blog` },
+  alternates: { canonical: `${siteConfig.url}/blog` },
   openGraph: {
-    title: 'Blog | Prateeksha',
-    description:
-      'Explore spiritual insights, psychic guidance, and coaching wisdom from Prateeksha.',
-    url: `${siteUrl}/blog`,
+    title: `Blog | ${siteConfig.name}`,
+    description: 'Explore spiritual insights, psychic guidance, and coaching wisdom from Prateeksha.',
+    url: `${siteConfig.url}/blog`,
     type: 'website',
-    images: [`${siteUrl}/og-image.png`],
+    images: [{ url: siteConfig.ogImage, width: 1200, height: 630, alt: `${siteConfig.name} Blog` }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Blog | Prateeksha',
-    description:
-      'Explore spiritual insights, psychic guidance, and coaching wisdom from Prateeksha.',
-    images: [`${siteUrl}/og-image.png`],
+    title: `Blog | ${siteConfig.name}`,
+    description: 'Explore spiritual insights, psychic guidance, and coaching wisdom from Prateeksha.',
+    images: [siteConfig.ogImage],
   },
 }
 
@@ -31,9 +28,14 @@ export default async function BlogListingPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-16">
-      <h1 className="font-[var(--font-heading)] text-4xl font-semibold text-[var(--color-indigo-deep)] mb-10">
-        Blog
-      </h1>
+      <header className="mb-12">
+        <h1 className="font-[var(--font-heading)] text-5xl font-semibold text-[var(--color-indigo-deep)] mb-3">
+          Blog
+        </h1>
+        <p className="text-[var(--color-charcoal)]/60 text-lg">
+          Spiritual insights, psychic guidance, and coaching wisdom.
+        </p>
+      </header>
 
       {posts.length === 0 ? (
         <p className="text-[var(--color-charcoal)]/60">

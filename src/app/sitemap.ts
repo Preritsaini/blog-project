@@ -1,34 +1,33 @@
 import type { MetadataRoute } from 'next'
 import { getAllPosts } from '@/lib/firestore/posts'
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://example.com'
-
-// ---------------------------------------------------------------------------
-// Pure builder — exported for property testing (no Firestore dependency)
-// ---------------------------------------------------------------------------
+import { siteConfig } from '@/lib/config'
 
 export function buildSitemapEntries(
   slugs: string[],
   baseUrl: string
-): { url: string; lastModified: Date }[] {
+): MetadataRoute.Sitemap {
   const now = new Date()
-  const staticRoutes = ['', '/blog', '/services', '/contact'].map((path) => ({
-    url: `${baseUrl}${path}`,
-    lastModified: now,
-  }))
-  const postRoutes = slugs.map((slug) => ({
+
+  const staticRoutes: MetadataRoute.Sitemap = [
+    { url: baseUrl,               lastModified: now, changeFrequency: 'weekly',  priority: 1.0 },
+    { url: `${baseUrl}/about`,    lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${baseUrl}/blog`,     lastModified: now, changeFrequency: 'daily',   priority: 0.9 },
+    { url: `${baseUrl}/services`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/contact`,  lastModified: now, changeFrequency: 'yearly',  priority: 0.5 },
+  ]
+
+  const postRoutes: MetadataRoute.Sitemap = slugs.map((slug) => ({
     url: `${baseUrl}/blog/${slug}`,
     lastModified: now,
+    changeFrequency: 'monthly',
+    priority: 0.7,
   }))
+
   return [...staticRoutes, ...postRoutes]
 }
-
-// ---------------------------------------------------------------------------
-// Next.js sitemap handler
-// ---------------------------------------------------------------------------
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getAllPosts()
   const slugs = posts.map((p) => p.slug)
-  return buildSitemapEntries(slugs, siteUrl)
+  return buildSitemapEntries(slugs, siteConfig.url)
 }

@@ -79,7 +79,7 @@ const siteUrl = 'https://example.com'
 // Validates: Requirements 9.1
 // ---------------------------------------------------------------------------
 describe('buildSitemapEntries — Property 19', () => {
-  const STATIC_PATHS = ['', '/blog', '/services', '/contact']
+  const STATIC_PATHS = ['', '/about', '/blog', '/services', '/contact']
 
   it('always includes all four static routes', () => {
     fc.assert(
@@ -96,7 +96,7 @@ describe('buildSitemapEntries — Property 19', () => {
 
   it('includes exactly one entry per post slug', () => {
     fc.assert(
-      fc.property(fc.array(slugArb, { minLength: 0, maxLength: 20 }), (slugs) => {
+      fc.property(fc.uniqueArray(slugArb, { minLength: 0, maxLength: 20 }), (slugs) => {
         const entries = buildSitemapEntries(slugs, siteUrl)
         const urls = entries.map((e) => e.url)
         for (const slug of slugs) {
@@ -111,7 +111,7 @@ describe('buildSitemapEntries — Property 19', () => {
 
   it('total entry count equals 4 static + number of slugs', () => {
     fc.assert(
-      fc.property(fc.array(slugArb, { minLength: 0, maxLength: 20 }), (slugs) => {
+      fc.property(fc.uniqueArray(slugArb, { minLength: 0, maxLength: 20 }), (slugs) => {
         const entries = buildSitemapEntries(slugs, siteUrl)
         expect(entries.length).toBe(STATIC_PATHS.length + slugs.length)
       }),

@@ -53,8 +53,10 @@ describe('NewPostPage — Requirement 7.2: all required fields rendered', () => 
     expect(screen.getByLabelText(/excerpt/i)).toBeInTheDocument()
   })
 
-  it('renders a cover image URL field', () => {
-    expect(screen.getByLabelText(/cover image/i)).toBeInTheDocument()
+  it('renders a cover image uploader', () => {
+    // ImageUploader uses a <span> label + file input, not a <label htmlFor>
+    expect(screen.getByText(/cover image/i)).toBeInTheDocument()
+    expect(screen.getByText(/upload image/i)).toBeInTheDocument()
   })
 
   it('renders a tags field', () => {
