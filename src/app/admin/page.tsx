@@ -142,8 +142,8 @@ export default async function AdminDashboardPage() {
                     <p className="text-xs text-[var(--color-charcoal)]/45 truncate">{c.subject}</p>
                   </div>
                   <span className="text-xs text-[var(--color-charcoal)]/30 flex-shrink-0 ml-auto">
-                    {c.submittedAt?.toDate
-                      ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' }).format(c.submittedAt.toDate())
+                    {c.submittedAt
+                      ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' }).format(new Date(c.submittedAt))
                       : ''}
                   </span>
                 </li>

@@ -46,7 +46,7 @@ export default async function AdminPostsPage() {
                     <td className="px-4 py-3 font-medium text-[var(--color-charcoal)]">{post.title}</td>
                     <td className="px-4 py-3 text-[var(--color-charcoal)]/60 text-xs">
                       {post.publishedAt
-                        ? post.publishedAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                        ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
                         : '—'}
                     </td>
                     <td className="px-4 py-3">
@@ -80,7 +80,7 @@ export default async function AdminPostsPage() {
                 </div>
                 <p className="text-xs text-[var(--color-charcoal)]/45 mb-3">
                   {post.publishedAt
-                    ? post.publishedAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                    ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
                     : 'No date'}
                 </p>
                 <div className="flex items-center gap-3">

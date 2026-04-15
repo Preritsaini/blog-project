@@ -6,16 +6,16 @@ export interface BlogCardProps {
   slug: string
   excerpt: string
   coverImage: string
-  publishedAt: Date
+  publishedAt: number // milliseconds
   tags: string[]
 }
 
-function formatDate(date: Date): string {
+function formatDate(ms: number): string {
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  }).format(date)
+  }).format(new Date(ms))
 }
 
 export default function BlogCard({
@@ -85,7 +85,7 @@ export default function BlogCard({
 
         {/* Published date */}
         <time
-          dateTime={publishedAt.toISOString()}
+          dateTime={new Date(publishedAt).toISOString()}
           className="text-xs text-[var(--color-charcoal)]/45"
         >
           {formatDate(publishedAt)}

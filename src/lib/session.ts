@@ -1,14 +1,15 @@
 import 'server-only'
 import { cookies } from 'next/headers'
-import { auth } from 'firebase-admin/auth'
+import { getAuth } from 'firebase-admin/auth'
 import { adminApp } from '@/lib/firebase/admin'
 
 const SESSION_COOKIE_NAME = '__session'
 const SESSION_DURATION_MS = 5 * 24 * 60 * 60 * 1000 // 5 days
 
 export async function createSession(idToken: string): Promise<void> {
+  if (!adminApp) throw new Error('Firebase Admin SDK not configured')
   const expiresIn = SESSION_DURATION_MS
-  const sessionCookie = await auth(adminApp).createSessionCookie(idToken, { expiresIn })
+  const sessionCookie = await getAuth(adminApp).createSessionCookie(idToken, { expiresIn })
 
   const cookieStore = await cookies()
   cookieStore.set(SESSION_COOKIE_NAME, sessionCookie, {
@@ -29,10 +30,10 @@ export async function verifySession(): Promise<import('firebase-admin/auth').Dec
   const cookieStore = await cookies()
   const cookie = cookieStore.get(SESSION_COOKIE_NAME)?.value
 
-  if (!cookie) return null
+  if (!cookie || !adminApp) return null
 
   try {
-    const decoded = await auth(adminApp).verifySessionCookie(cookie, true)
+    const decoded = await getAuth(adminApp).verifySessionCookie(cookie, true)
     return decoded
   } catch {
     return null

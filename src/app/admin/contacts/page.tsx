@@ -7,10 +7,11 @@ interface Contact {
   email: string
   subject: string
   message: string
-  submittedAt: { toDate: () => Date } | null
+  submittedAt: number | null
 }
 
 async function getAllContacts(): Promise<Contact[]> {
+  if (!adminApp) return []
   const snap = await getFirestore(adminApp)
     .collection('contacts')
     .orderBy('submittedAt', 'desc')
@@ -21,7 +22,7 @@ async function getAllContacts(): Promise<Contact[]> {
     email: d.data().email,
     subject: d.data().subject,
     message: d.data().message,
-    submittedAt: d.data().submittedAt ?? null,
+    submittedAt: d.data().submittedAt?.toMillis?.() ?? null,
   }))
 }
 
@@ -72,14 +73,14 @@ export default async function AdminContactsPage() {
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className="text-xs text-[var(--color-charcoal)]/40">
-                    {c.submittedAt?.toDate
+                    {c.submittedAt
                       ? new Intl.DateTimeFormat('en-GB', {
                           day: 'numeric',
                           month: 'short',
                           year: 'numeric',
                           hour: '2-digit',
                           minute: '2-digit',
-                        }).format(c.submittedAt.toDate())
+                        }).format(new Date(c.submittedAt))
                       : '—'}
                   </p>
                   <a

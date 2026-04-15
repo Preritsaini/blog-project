@@ -26,7 +26,7 @@ function db() {
 }
 
 function revalidateServices() {
-  revalidateTag('services')
+  revalidateTag('services', 'max')
   revalidatePath('/services')
   revalidatePath('/')
 }

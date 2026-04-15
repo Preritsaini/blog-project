@@ -3,8 +3,6 @@
  * These are extracted so they can be property-tested without Firestore.
  */
 
-import type { Timestamp } from 'firebase-admin/firestore'
-
 export interface BlogPost {
   id: string
   title: string
@@ -14,9 +12,9 @@ export interface BlogPost {
   coverImage: string
   tags: string[]
   published: boolean
-  publishedAt: Timestamp
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  publishedAt: number // milliseconds
+  createdAt: number // milliseconds
+  updatedAt: number // milliseconds
 }
 
 export interface Service {
@@ -27,8 +25,8 @@ export interface Service {
   price: string
   bookingLink: string
   active: boolean
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  createdAt: number // milliseconds
+  updatedAt: number // milliseconds
 }
 
 export interface ContactSubmission {
@@ -36,14 +34,14 @@ export interface ContactSubmission {
   email: string
   subject: string
   message: string
-  submittedAt: Timestamp
+  submittedAt: number // milliseconds
 }
 
 /** Returns up to `limit` published posts sorted by publishedAt descending. */
 export function filterRecentPosts(posts: BlogPost[], limit: number): BlogPost[] {
   return posts
     .filter((p) => p.published)
-    .sort((a, b) => b.publishedAt.toMillis() - a.publishedAt.toMillis())
+    .sort((a, b) => b.publishedAt - a.publishedAt)
     .slice(0, limit)
 }
 
@@ -51,7 +49,7 @@ export function filterRecentPosts(posts: BlogPost[], limit: number): BlogPost[] 
 export function filterPublishedPosts(posts: BlogPost[]): BlogPost[] {
   return posts
     .filter((p) => p.published)
-    .sort((a, b) => b.publishedAt.toMillis() - a.publishedAt.toMillis())
+    .sort((a, b) => b.publishedAt - a.publishedAt)
 }
 
 /**

@@ -48,7 +48,7 @@ export async function updateSiteSettings(
     await saveSiteSettings(clean)
 
     // Bust the settings cache tag — all pages using getSiteSettings() will re-fetch
-    revalidateTag('settings')
+    revalidateTag('settings', 'max')
     // Also bust path-level ISR cache for every public page
     revalidatePath('/', 'layout')
 

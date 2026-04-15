@@ -40,7 +40,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     email: d.data().email as string,
     subject: d.data().subject as string,
     message: d.data().message as string,
-    submittedAt: d.data().submittedAt,
+    submittedAt: d.data().submittedAt?.toMillis?.() ?? 0,
   }))
 
   // Week boundary

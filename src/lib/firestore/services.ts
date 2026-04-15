@@ -30,8 +30,8 @@ function docToService(
     price: data.price,
     bookingLink: data.bookingLink,
     active: data.active,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
+    createdAt: data.createdAt?.toMillis?.() ?? 0,
+    updatedAt: data.updatedAt?.toMillis?.() ?? 0,
   }
 }
 
@@ -39,11 +39,9 @@ export const getActiveServices = unstable_cache(
   async (): Promise<Service[]> => {
     const database = db()
     if (!database) return []
-    const snap = await database
-      .collection('services')
-      .where('active', '==', true)
-      .get()
-    return snap.docs.map(docToService)
+    const snap = await database.collection('services').get()
+    const all = snap.docs.map(docToService)
+    return filterActiveServices(all)
   },
   ['active-services'],
   { tags: ['services'], revalidate: 60 }

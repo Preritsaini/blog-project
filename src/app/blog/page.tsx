@@ -62,7 +62,7 @@ export default async function BlogListingPage() {
                 slug={post.slug}
                 excerpt={post.excerpt}
                 coverImage={post.coverImage}
-                publishedAt={post.publishedAt.toDate()}
+                publishedAt={post.publishedAt}
                 tags={post.tags}
               />
             ))}

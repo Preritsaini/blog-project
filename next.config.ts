@@ -44,9 +44,7 @@ const nextConfig: NextConfig = {
 
   reactStrictMode: true,
 
-  devIndicators: {
-    appIsrStatus: false,
-  },
+  devIndicators: false,
 
   // Compress responses
   compress: true,

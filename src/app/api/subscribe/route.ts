@@ -9,6 +9,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
     }
 
+    if (!adminApp) {
+      throw new Error('Firebase Admin SDK not configured')
+    }
     const db = getFirestore(adminApp)
 
     // Upsert — avoid duplicates

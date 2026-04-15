@@ -28,7 +28,7 @@ function db() {
 
 function revalidatePosts(slug?: string) {
   // Tag-based: busts all unstable_cache entries tagged 'posts'
-  revalidateTag('posts')
+  revalidateTag('posts', 'max')
   // Path-based: busts ISR page cache
   revalidatePath('/blog')
   revalidatePath('/')

@@ -181,7 +181,7 @@ export default async function HomePage() {
             ) : (
               <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {recentPosts.map((post) => (
-                  <BlogCard key={post.id} title={post.title} slug={post.slug} excerpt={post.excerpt} coverImage={post.coverImage} publishedAt={post.publishedAt.toDate()} tags={post.tags} />
+                  <BlogCard key={post.id} title={post.title} slug={post.slug} excerpt={post.excerpt} coverImage={post.coverImage} publishedAt={post.publishedAt} tags={post.tags} />
                 ))}
               </div>
             )}

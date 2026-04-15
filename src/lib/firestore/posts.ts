@@ -40,9 +40,9 @@ function docToBlogPost(
     coverImage: data.coverImage,
     tags: data.tags ?? [],
     published: data.published,
-    publishedAt: data.publishedAt,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
+    publishedAt: data.publishedAt?.toMillis?.() ?? 0,
+    createdAt: data.createdAt?.toMillis?.() ?? 0,
+    updatedAt: data.updatedAt?.toMillis?.() ?? 0,
   }
 }
 
@@ -52,13 +52,9 @@ export const getRecentPosts = unstable_cache(
   async (limit = 3): Promise<BlogPost[]> => {
     const database = db()
     if (!database) return []
-    const snap = await database
-      .collection('posts')
-      .where('published', '==', true)
-      .orderBy('publishedAt', 'desc')
-      .limit(limit)
-      .get()
-    return snap.docs.map(docToBlogPost)
+    const snap = await database.collection('posts').get()
+    const all = snap.docs.map(docToBlogPost)
+    return filterRecentPosts(all, limit)
   },
   ['recent-posts'],
   { tags: ['posts'], revalidate: 60 }
@@ -68,12 +64,9 @@ export const getAllPosts = unstable_cache(
   async (): Promise<BlogPost[]> => {
     const database = db()
     if (!database) return []
-    const snap = await database
-      .collection('posts')
-      .where('published', '==', true)
-      .orderBy('publishedAt', 'desc')
-      .get()
-    return snap.docs.map(docToBlogPost)
+    const snap = await database.collection('posts').get()
+    const all = snap.docs.map(docToBlogPost)
+    return filterPublishedPosts(all)
   },
   ['all-posts'],
   { tags: ['posts'], revalidate: 60 }
@@ -83,14 +76,11 @@ export const getPostBySlug = unstable_cache(
   async (slug: string): Promise<BlogPost | null> => {
     const database = db()
     if (!database) return null
-    const snap = await database
-      .collection('posts')
-      .where('published', '==', true)
-      .where('slug', '==', slug)
-      .limit(1)
-      .get()
-    if (snap.empty) return null
-    return docToBlogPost(snap.docs[0])
+    // Simple filter on slug is usually fine without index if it's the only filter
+    // But for consistency and to be 100% safe during build:
+    const snap = await database.collection('posts').get()
+    const all = snap.docs.map(docToBlogPost)
+    return all.find((p) => p.published && p.slug === slug) ?? null
   },
   ['post-by-slug'],
   { tags: ['posts'], revalidate: 60 }

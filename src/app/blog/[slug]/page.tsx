@@ -20,8 +20,8 @@ export async function generateStaticParams() {
 
 export function buildPostMetadata(post: BlogPost, baseUrl: string): Metadata {
   const canonical = `${baseUrl}/blog/${post.slug}`
-  const publishedTime = post.publishedAt.toDate().toISOString()
-  const modifiedTime = post.updatedAt.toDate().toISOString()
+  const publishedTime = new Date(post.publishedAt).toISOString()
+  const modifiedTime = new Date(post.updatedAt).toISOString()
 
   return {
     title: post.title,
@@ -65,8 +65,8 @@ export function buildArticleJsonLd(post: BlogPost, baseUrl: string): object {
     headline: post.title,
     description: post.excerpt,
     image: post.coverImage || `${baseUrl}/og-image.png`,
-    datePublished: post.publishedAt.toDate().toISOString(),
-    dateModified: post.updatedAt.toDate().toISOString(),
+    datePublished: new Date(post.publishedAt).toISOString(),
+    dateModified: new Date(post.updatedAt).toISOString(),
     author: {
       '@type': 'Person',
       name: siteConfig.coachName,
@@ -166,14 +166,14 @@ export default async function BlogPostPage({
           </span>
           <span className="text-[var(--color-charcoal)]/25">·</span>
           <time
-            dateTime={post.publishedAt.toDate().toISOString()}
+            dateTime={new Date(post.publishedAt).toISOString()}
             className="text-sm text-[var(--color-charcoal)]/45"
           >
             {new Intl.DateTimeFormat('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
-            }).format(post.publishedAt.toDate())}
+            }).format(new Date(post.publishedAt))}
           </time>
         </div>
 
@@ -202,7 +202,7 @@ export default async function BlogPostPage({
                   slug={related.slug}
                   excerpt={related.excerpt}
                   coverImage={related.coverImage}
-                  publishedAt={related.publishedAt.toDate()}
+                  publishedAt={related.publishedAt}
                   tags={related.tags}
                 />
               ))}
