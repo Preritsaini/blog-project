@@ -2,9 +2,19 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import BlogCard from '@/components/ui/BlogCard'
-import { getPostBySlug, getRelatedPosts } from '@/lib/firestore/posts'
+import { getPostBySlug, getRelatedPosts, getAllPosts } from '@/lib/firestore/posts'
 import { siteConfig } from '@/lib/config'
 import type { BlogPost } from '@/lib/firestore/utils'
+
+// ─── SSG: pre-build all published slugs at build time ────────────────────────
+// New posts added after build are rendered on first request then cached (ISR).
+export const dynamicParams = true   // allow slugs not in generateStaticParams
+export const revalidate = 60        // ISR fallback: revalidate cached pages every 60s
+
+export async function generateStaticParams() {
+  const posts = await getAllPosts()
+  return posts.map((p) => ({ slug: p.slug }))
+}
 
 // ─── Pure builder functions (exported for property testing) ──────────────────
 
@@ -26,7 +36,7 @@ export function buildPostMetadata(post: BlogPost, baseUrl: string): Metadata {
       siteName: siteConfig.name,
       publishedTime,
       modifiedTime,
-      authors: [siteConfig.author],
+      authors: [siteConfig.coachName],
       tags: post.tags,
       images: [
         {
@@ -108,10 +118,10 @@ export default async function BlogPostPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <article className="max-w-3xl mx-auto px-6 py-16">
+      <article className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
         {/* Cover image */}
         {post.coverImage && (
-          <div className="relative h-72 sm:h-96 w-full overflow-hidden rounded-xl mb-10 shadow-md">
+          <div className="relative h-52 sm:h-72 lg:h-96 w-full overflow-hidden rounded-xl mb-8 sm:mb-10 shadow-md">
             <Image
               src={post.coverImage}
               alt={post.title}
@@ -125,11 +135,11 @@ export default async function BlogPostPage({
 
         {/* Tags */}
         {post.tags.length > 0 && (
-          <ul className="flex flex-wrap gap-2 list-none m-0 p-0 mb-5" aria-label="Tags">
+          <ul className="flex flex-wrap gap-2 list-none m-0 p-0 mb-4 sm:mb-5" aria-label="Tags">
             {post.tags.map((tag) => (
               <li
                 key={tag}
-                className="rounded-full bg-[var(--color-indigo-deep)]/10 px-3 py-1 text-xs font-medium text-[var(--color-indigo-deep)]"
+                className="rounded-full bg-[var(--color-lavender)]/15 px-3 py-1 text-xs font-medium text-[var(--color-plum-deep)]"
               >
                 {tag}
               </li>
@@ -138,26 +148,26 @@ export default async function BlogPostPage({
         )}
 
         {/* Title */}
-        <h1 className="font-[var(--font-heading)] text-4xl sm:text-5xl font-semibold text-[var(--color-charcoal)] mb-4 leading-tight">
+        <h1 className="font-[var(--font-heading)] text-3xl sm:text-4xl lg:text-5xl font-semibold text-[var(--color-plum-deep)] mb-3 sm:mb-4 leading-tight">
           {post.title}
         </h1>
 
         {/* Excerpt */}
         {post.excerpt && (
-          <p className="text-lg text-[var(--color-charcoal)]/70 mb-6 leading-relaxed">
+          <p className="text-base sm:text-lg text-[var(--color-charcoal)]/65 mb-5 sm:mb-6 leading-relaxed">
             {post.excerpt}
           </p>
         )}
 
         {/* Meta row */}
-        <div className="flex items-center gap-3 mb-10 pb-8 border-b border-[var(--color-charcoal)]/10">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-8 sm:mb-10 pb-6 sm:pb-8 border-b border-[var(--color-charcoal)]/10">
           <span className="text-sm font-medium text-[var(--color-charcoal)]">
             {siteConfig.coachName}
           </span>
-          <span className="text-[var(--color-charcoal)]/30">·</span>
+          <span className="text-[var(--color-charcoal)]/25">·</span>
           <time
             dateTime={post.publishedAt.toDate().toISOString()}
-            className="text-sm text-[var(--color-charcoal)]/50"
+            className="text-sm text-[var(--color-charcoal)]/45"
           >
             {new Intl.DateTimeFormat('en-US', {
               year: 'numeric',
@@ -178,13 +188,13 @@ export default async function BlogPostPage({
       {relatedPosts.length > 0 && (
         <section
           aria-label="Related posts"
-          className="bg-[var(--color-off-white)] py-16 px-6"
+          className="bg-[var(--color-mist)] py-12 sm:py-16 px-4 sm:px-6"
         >
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-[var(--font-heading)] text-2xl font-semibold text-[var(--color-indigo-deep)] mb-8">
+            <h2 className="font-[var(--font-heading)] text-xl sm:text-2xl font-semibold text-[var(--color-plum-deep)] mb-6 sm:mb-8">
               Related Posts
             </h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {relatedPosts.map((related) => (
                 <BlogCard
                   key={related.id}

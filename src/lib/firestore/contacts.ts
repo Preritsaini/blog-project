@@ -5,23 +5,20 @@ import type { ContactSubmission } from './utils'
 
 export type { ContactSubmission }
 
-function db() {
-  if (!adminApp) return null
+function requireDb() {
+  if (!adminApp) {
+    throw new Error(
+      'Firebase Admin SDK is not initialised. ' +
+      'Contact form submissions cannot be saved. Check your .env.local file.'
+    )
+  }
   return getFirestore(adminApp)
 }
 
-/** Writes a ContactSubmission document to the contacts collection. */
 export async function saveContact(
   data: Omit<ContactSubmission, 'submittedAt'>
 ): Promise<void> {
-  const database = db()
-  if (!database) {
-    throw new Error('Firebase Admin SDK not configured. Cannot save contact submission.')
-  }
-  await database
+  await requireDb()
     .collection('contacts')
-    .add({
-      ...data,
-      submittedAt: Timestamp.now(),
-    })
+    .add({ ...data, submittedAt: Timestamp.now() })
 }

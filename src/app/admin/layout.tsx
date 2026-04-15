@@ -1,35 +1,65 @@
 import Link from 'next/link'
 import { logout } from '@/actions/auth'
 
+// ─── SSR: admin is always fresh — never cache ─────────────────────────────────
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+const navLinks = [
+  { href: '/admin',          label: 'Dashboard' },
+  { href: '/admin/posts',    label: 'Posts'     },
+  { href: '/admin/services', label: 'Services'  },
+  { href: '/admin/contacts', label: 'Contacts'  },
+  { href: '/admin/media',    label: 'Media'     },
+  { href: '/admin/settings', label: 'Settings'  },
+]
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[var(--color-off-white)]">
-      <header className="bg-[var(--color-indigo-deep)] text-white">
-        <div className="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-[var(--color-mist)]">
+      <header className="bg-[var(--color-plum-deep)] text-[var(--color-cream)] sticky top-0 z-40 shadow-md">
+        <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link
               href="/admin"
-              className="font-serif text-xl font-semibold tracking-wide text-[var(--color-gold-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--color-gold-soft)] rounded"
+              className="font-[var(--font-heading)] text-lg font-semibold text-[var(--color-gold)]"
             >
-              Prateeksha — Admin
+              Soul Compass
             </Link>
-            <nav className="hidden sm:flex items-center gap-4 text-sm text-white/80">
-              <Link href="/admin/posts" className="hover:text-white transition-colors">Posts</Link>
-              <Link href="/admin/services" className="hover:text-white transition-colors">Services</Link>
-              <Link href="/admin/media" className="hover:text-white transition-colors">Media</Link>
+            <nav className="hidden sm:flex items-center gap-1">
+              {navLinks.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="px-3 py-1.5 rounded-md text-sm text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] hover:bg-[var(--color-cream)]/10 transition-colors"
+                >
+                  {label}
+                </Link>
+              ))}
             </nav>
           </div>
-          <form action={logout}>
-            <button
-              type="submit"
-              className="text-sm text-white/80 hover:text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-gold-soft)] rounded px-3 py-1.5 border border-white/20 hover:border-white/50 transition-colors"
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              target="_blank"
+              className="text-xs text-[var(--color-cream)]/50 hover:text-[var(--color-cream)]/80 transition-colors"
             >
-              Log out
-            </button>
-          </form>
+              View site ↗
+            </Link>
+            <form action={logout}>
+              <button
+                type="submit"
+                className="text-sm text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] border border-[var(--color-cream)]/20 hover:border-[var(--color-cream)]/40 rounded-md px-3 py-1.5 transition-colors"
+              >
+                Log out
+              </button>
+            </form>
+          </div>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
+
+      <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
     </div>
   )
 }

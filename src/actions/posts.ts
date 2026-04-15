@@ -1,7 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { getFirestore, Timestamp } from 'firebase-admin/firestore'
 import { adminApp } from '@/lib/firebase/admin'
 import { PostSchema } from '@/lib/validations'
@@ -20,17 +20,20 @@ export interface PostFormState {
 }
 
 function db() {
+  if (!adminApp) {
+    throw new Error('Firebase Admin SDK is not initialised. Check your .env.local file.')
+  }
   return getFirestore(adminApp)
 }
 
-function revalidatePostPaths(slug?: string) {
+function revalidatePosts(slug?: string) {
+  // Tag-based: busts all unstable_cache entries tagged 'posts'
+  revalidateTag('posts')
+  // Path-based: busts ISR page cache
   revalidatePath('/blog')
   revalidatePath('/')
-  if (slug) {
-    revalidatePath(`/blog/${slug}`)
-  } else {
-    revalidatePath('/blog/[slug]', 'page')
-  }
+  if (slug) revalidatePath(`/blog/${slug}`)
+  else revalidatePath('/blog/[slug]', 'page')
 }
 
 export async function createPost(
@@ -40,17 +43,17 @@ export async function createPost(
   const raw = {
     title: formData.get('title') as string,
     slug: formData.get('slug') as string,
-    excerpt: formData.get('excerpt') as string ?? '',
-    coverImage: formData.get('coverImage') as string ?? '',
-    tags: formData.getAll('tags') as string[],
-    body: formData.get('body') as string ?? '',
+    excerpt: (formData.get('excerpt') as string) ?? '',
+    coverImage: (formData.get('coverImage') as string) ?? '',
+    tags: (formData.get('tags') as string)
+      ? (formData.get('tags') as string).split(',').map((t) => t.trim()).filter(Boolean)
+      : (formData.getAll('tags') as string[]),
+    body: (formData.get('body') as string) ?? '',
     published: formData.get('published') === 'true',
   }
 
   const result = PostSchema.safeParse(raw)
-  if (!result.success) {
-    return { errors: result.error.flatten().fieldErrors }
-  }
+  if (!result.success) return { errors: result.error.flatten().fieldErrors }
 
   try {
     const now = Timestamp.now()
@@ -64,7 +67,7 @@ export async function createPost(
     return { serverError: 'Something went wrong. Please try again.' }
   }
 
-  revalidatePostPaths(result.data.slug)
+  revalidatePosts(result.data.slug)
   redirect('/admin/posts')
 }
 
@@ -76,17 +79,17 @@ export async function updatePost(
   const raw = {
     title: formData.get('title') as string,
     slug: formData.get('slug') as string,
-    excerpt: formData.get('excerpt') as string ?? '',
-    coverImage: formData.get('coverImage') as string ?? '',
-    tags: formData.getAll('tags') as string[],
-    body: formData.get('body') as string ?? '',
+    excerpt: (formData.get('excerpt') as string) ?? '',
+    coverImage: (formData.get('coverImage') as string) ?? '',
+    tags: (formData.get('tags') as string)
+      ? (formData.get('tags') as string).split(',').map((t) => t.trim()).filter(Boolean)
+      : (formData.getAll('tags') as string[]),
+    body: (formData.get('body') as string) ?? '',
     published: formData.get('published') === 'true',
   }
 
   const result = PostSchema.safeParse(raw)
-  if (!result.success) {
-    return { errors: result.error.flatten().fieldErrors }
-  }
+  if (!result.success) return { errors: result.error.flatten().fieldErrors }
 
   try {
     await db().collection('posts').doc(id).update({
@@ -97,12 +100,12 @@ export async function updatePost(
     return { serverError: 'Something went wrong. Please try again.' }
   }
 
-  revalidatePostPaths(result.data.slug)
+  revalidatePosts(result.data.slug)
   redirect('/admin/posts')
 }
 
 export async function deletePost(id: string): Promise<void> {
   await db().collection('posts').doc(id).delete()
-  revalidatePostPaths()
+  revalidatePosts()
   redirect('/admin/posts')
 }

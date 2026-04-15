@@ -3,16 +3,12 @@
  */
 
 export const siteConfig = {
-  /** Brand / site name */
   name: 'Soul Compass',
-
-  /** The coach */
   coachName: 'Prateeksha',
-
   tagline: 'Psychic Coaching & Spiritual Guidance',
 
   description:
-    'Soul Compass is a psychic coaching practice led by Prateeksha. Through intuitive readings, energy healing, and personalised spiritual coaching, she helps you navigate life\'s transitions with clarity, confidence, and purpose.',
+    'Soul Compass offers transformative psychic coaching with Prateeksha — a certified spiritual life coach, Reiki master, and intuitive healer. Discover clarity, healing, and purpose through personalised readings and one-on-one sessions.',
 
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://soulcompass.co',
   ogImage: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://soulcompass.co'}/og-image.png`,
@@ -27,13 +23,12 @@ export const siteConfig = {
     facebook: 'https://facebook.com/soulcompassco',
   },
 
-  /** About the coach — used on homepage + about section */
   about: {
     headline: 'Meet Prateeksha',
     bio: [
-      'Prateeksha is a gifted psychic coach, intuitive healer, and spiritual guide with over a decade of experience helping people reconnect with their inner wisdom. Born with a heightened sensitivity to energy and emotion, she discovered her calling early — and has since dedicated her life to helping others find theirs.',
-      'Her practice blends psychic intuition, tarot, astrology, and energy healing into deeply personalised sessions. Whether you\'re navigating a crossroads, seeking clarity on relationships, or simply feeling called to explore your spiritual path, Prateeksha meets you exactly where you are.',
-      'Clients describe working with her as "like finally being understood" — a safe, non-judgmental space where real transformation begins.',
+      'Prateeksha is a certified psychic coach, Reiki master, and intuitive healer with over a decade of experience guiding people through life\'s most pivotal moments. She was born with a rare sensitivity to energy — a gift she spent years learning to understand, and now uses entirely in service of others.',
+      'Her sessions weave together psychic intuition, tarot, astrology, and energy healing into something that feels less like a reading and more like a conversation with the wisest part of yourself. She doesn\'t tell you what to do — she helps you hear what you already know.',
+      'Over 500 clients have sat with Prateeksha at crossroads of career, love, grief, and identity. Every single one left with something they didn\'t have before: direction.',
     ],
     credentials: [
       'Certified Spiritual Life Coach',

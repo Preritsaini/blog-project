@@ -24,7 +24,7 @@ describe('ServicesPage — empty state', () => {
     const jsx = await ServicesPage()
     render(jsx)
 
-    expect(screen.getByText(/services coming soon/i)).toBeInTheDocument()
+    expect(screen.getByText(/new sessions coming soon/i)).toBeInTheDocument()
   })
 
   it('renders service cards when services exist', async () => {

@@ -22,11 +22,27 @@ jest.mock('@/components/ui/ContactForm', () => ({
   __esModule: true,
   default: () => null,
 }))
+jest.mock('@/lib/firestore/settings', () => ({
+  getSiteSettings: jest.fn().mockResolvedValue({
+    siteName: 'Soul Compass',
+    tagline: 'Psychic Coaching & Spiritual Guidance',
+    coachName: 'Prateeksha',
+    siteDescription: 'Test description',
+    ogImage: 'https://example.com/og.png',
+    colorCream: '#F7F3EE',
+    colorMist: '#EEE8F2',
+    colorLavender: '#8E79A8',
+    colorPlumDeep: '#4A365A',
+    colorSage: '#9CAF9A',
+    colorGold: '#C9A86A',
+    colorCharcoal: '#2C2433',
+  }),
+}))
 jest.mock('server-only', () => ({}))
 
 import { buildSitemapEntries } from './sitemap'
 import { buildPostMetadata } from './blog/[slug]/page'
-import { metadata as homeMetadata } from './page'
+import { generateMetadata as generateHomeMetadata } from './page'
 import { metadata as blogMetadata } from './blog/page'
 import { metadata as servicesMetadata } from './services/page'
 import { metadata as contactMetadata } from './contact/page'
@@ -182,7 +198,8 @@ function assertMetadataCompleteness(meta: Metadata, _label: string) {
 }
 
 describe('Static page metadata — Property 20', () => {
-  it('homepage metadata is complete', () => {
+  it('homepage metadata is complete', async () => {
+    const homeMetadata = await generateHomeMetadata() as Metadata
     assertMetadataCompleteness(homeMetadata, 'homepage')
   })
 

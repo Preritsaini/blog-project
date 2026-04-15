@@ -1,37 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧭 Soul Compass — Spiritual & Psychic Coaching
 
-## Getting Started
+A premium, modern web application for a spiritual coach, built with **Next.js 15**, **Firebase**, and **Tailwind CSS**. This platform provides a serene, mystical user experience designed to showcase services, share wisdom through a blog, and facilitate client bookings.
 
-First, run the development server:
+![Soul Compass Banner](/images/hero-bg.png)
+
+## ✨ Key Features
+
+-   **Dynamic Hero Section**: Interactive, atmospheric hero section with custom-generated mystical imagery.
+-   **Service Showcases**: Elegant cards for Tarot readings, Crystal healing, and Astrology sessions.
+-   **Integrated Blog**: A fully functional blog system powered by Firestore.
+-   **Admin Dashboard Ready**: Structured to support server-side Firestore management via the Firebase Admin SDK.
+-   **Responsive Design**: A premium, "mobile-first" experience that looks stunning on any device.
+-   **SEO Optimized**: Automated meta tags, OpenGraph support, and JSON-LD schema for better search visibility.
+
+## 🛠 Tech Stack
+
+-   **Framework**: [Next.js 15+](https://nextjs.org/) (App Router, Turbopack)
+-   **Database**: [Cloud Firestore](https://firebase.google.com/docs/firestore)
+-   **Authentication**: [Firebase Auth](https://firebase.google.com/docs/auth) (Ready for implementation)
+-   **Storage**: [Firebase Storage](https://firebase.google.com/docs/storage) for media
+-   **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) & Modern Vanilla CSS
+-   **Language**: [TypeScript](https://www.typescriptlang.org/)
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+-   Node.js 18.x or later
+-   A Firebase Project
+
+### 2. Environment Setup
+Create a `.env.local` file in the root directory and populate it with your Firebase credentials (refer to `.env.local.example`):
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Firebase Client SDK
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+# ... etc
+
+# Firebase Admin SDK (Server Only)
+FIREBASE_ADMIN_PROJECT_ID=...
+FIREBASE_ADMIN_CLIENT_EMAIL=...
+FIREBASE_ADMIN_PRIVATE_KEY=...
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Installation
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🎨 Asset Information
 
-## Learn More
+This project features custom-generated AI assets located in `/public/images/`:
+-   `logo.png`: Minimalist golden geometric line art.
+-   `hero-bg.png`: Mystical golden compass background.
+-   `coach-portrait.png`: Professional cinematic portrait of a spiritual coach.
+-   `service-tarot.png`, `service-healing.png`, `service-astrology.png`: Thematic service imagery.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# blog-project
+*Crafted with ✨ by Antigravity*

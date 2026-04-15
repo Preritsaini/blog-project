@@ -1,38 +1,43 @@
 import 'server-only'
-import { initializeApp, getApps, getApp, cert } from 'firebase-admin/app'
+import { initializeApp, getApps, getApp, cert, type App } from 'firebase-admin/app'
 
-function getAdminApp() {
+function getAdminApp(): App | null {
   if (getApps().length) return getApp()
 
-  const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID
+  const projectId   = process.env.FIREBASE_ADMIN_PROJECT_ID
   const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL
-  const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n')
+  const privateKey  = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n')
 
-  if (!projectId || !clientEmail || !privateKey || privateKey.includes('YOUR_PRIVATE_KEY_HERE')) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn(
-        'Firebase Admin SDK credentials missing or incomplete. ' +
-        'Server-side Firebase features (Admin, Firestore) will be unavailable. ' +
-        'Check your .env.local file.'
-      )
-    }
+  if (!projectId || !clientEmail || !privateKey) {
+    console.warn(
+      '[Soul Compass] Firebase Admin SDK env vars missing.\n' +
+      'Copy .env.local.example → .env.local and fill in your Firebase credentials.\n' +
+      'Required: FIREBASE_ADMIN_PROJECT_ID, FIREBASE_ADMIN_CLIENT_EMAIL, FIREBASE_ADMIN_PRIVATE_KEY'
+    )
     return null
   }
 
   try {
-    return initializeApp({
-      credential: cert({
-        projectId,
-        clientEmail,
-        privateKey,
-      }),
-    })
-  } catch (error) {
-    console.error('Failed to initialize Firebase Admin SDK:', error)
+    return initializeApp({ credential: cert({ projectId, clientEmail, privateKey }) })
+  } catch (err) {
+    console.error('[Soul Compass] Firebase Admin SDK init failed:', err)
     return null
   }
 }
 
-const adminApp = getAdminApp()
+export const adminApp = getAdminApp()
 
-export { adminApp }
+/**
+ * Returns a Firestore instance or throws a descriptive error.
+ * Use this instead of calling getFirestore(adminApp) directly.
+ */
+export function requireAdminApp(): App {
+  if (!adminApp) {
+    throw new Error(
+      'Firebase Admin SDK is not initialised. ' +
+      'Make sure FIREBASE_ADMIN_PROJECT_ID, FIREBASE_ADMIN_CLIENT_EMAIL, ' +
+      'and FIREBASE_ADMIN_PRIVATE_KEY are set in your .env.local file.'
+    )
+  }
+  return adminApp
+}

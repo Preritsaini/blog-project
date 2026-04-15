@@ -14,27 +14,31 @@ export default function ServiceCard({
   bookingLink,
 }: ServiceCardProps) {
   return (
-    <article className="flex flex-col gap-4 rounded-lg border border-[var(--color-charcoal)]/10 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
-      <h2 className="font-[var(--font-heading)] text-2xl font-semibold text-[var(--color-indigo-deep)]">
+    <article className="flex flex-col gap-4 rounded-xl border border-[var(--color-charcoal)]/8 bg-[var(--color-mist)] p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      <h2 className="font-[var(--font-heading)] text-2xl font-semibold text-[var(--color-plum-deep)]">
         {name}
       </h2>
 
-      <p className="text-sm text-[var(--color-charcoal)]/80 flex-1">{description}</p>
+      <p className="text-sm text-[var(--color-charcoal)]/75 flex-1 leading-relaxed">
+        {description}
+      </p>
 
       <dl className="flex flex-wrap gap-4 text-sm">
         <div>
-          <dt className="font-medium text-[var(--color-charcoal)]/60">Duration</dt>
-          <dd className="text-[var(--color-charcoal)]">{duration}</dd>
+          <dt className="font-medium text-[var(--color-charcoal)]/50 text-xs uppercase tracking-wide">Duration</dt>
+          <dd className="text-[var(--color-charcoal)] mt-0.5">{duration}</dd>
         </div>
         <div>
-          <dt className="font-medium text-[var(--color-charcoal)]/60">Price</dt>
-          <dd className="text-[var(--color-charcoal)] font-semibold">{price}</dd>
+          <dt className="font-medium text-[var(--color-charcoal)]/50 text-xs uppercase tracking-wide">Price</dt>
+          <dd className="text-[var(--color-plum-deep)] font-semibold mt-0.5">{price}</dd>
         </div>
       </dl>
 
       <a
         href={bookingLink}
-        className="mt-auto inline-block rounded-md bg-[var(--color-gold-soft)] px-5 py-2.5 text-center text-sm font-semibold text-[var(--color-indigo-deep)] hover:opacity-90 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold-soft)]"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-auto inline-block rounded-md bg-[var(--color-sage)] px-5 py-2.5 text-center text-sm font-semibold text-[var(--color-plum-deep)] hover:opacity-90 transition-opacity active:scale-95"
       >
         Book Now
       </a>

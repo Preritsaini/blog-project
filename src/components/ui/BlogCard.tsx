@@ -26,22 +26,30 @@ export default function BlogCard({
   publishedAt,
   tags,
 }: BlogCardProps) {
+  const hasImage = Boolean(coverImage)
+
   return (
-    <article className="flex flex-col overflow-hidden rounded-lg border border-[var(--color-charcoal)]/10 bg-white shadow-sm hover:shadow-md transition-shadow">
+    <article className="flex flex-col overflow-hidden rounded-xl border border-[var(--color-charcoal)]/8 bg-[var(--color-mist)] shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">
       <Link
         href={`/blog/${slug}`}
-        className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-indigo-deep)]"
+        className="block"
         tabIndex={-1}
         aria-hidden="true"
       >
-        <div className="relative h-48 w-full overflow-hidden">
-          <Image
-            src={coverImage}
-            alt={title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover"
-          />
+        <div className="relative h-48 w-full overflow-hidden bg-[var(--color-lavender)]/10">
+          {hasImage ? (
+            <Image
+              src={coverImage}
+              alt={title}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <span className="font-[var(--font-heading)] text-4xl text-[var(--color-lavender)]/30">✦</span>
+            </div>
+          )}
         </div>
       </Link>
 
@@ -52,7 +60,7 @@ export default function BlogCard({
             {tags.map((tag) => (
               <li
                 key={tag}
-                className="rounded-full bg-[var(--color-indigo-deep)]/10 px-2 py-0.5 text-xs font-medium text-[var(--color-indigo-deep)]"
+                className="rounded-full bg-[var(--color-lavender)]/15 px-2.5 py-0.5 text-xs font-medium text-[var(--color-plum-deep)]"
               >
                 {tag}
               </li>
@@ -61,10 +69,10 @@ export default function BlogCard({
         )}
 
         {/* Title */}
-        <h2 className="font-[var(--font-heading)] text-xl font-semibold text-[var(--color-charcoal)] leading-snug">
+        <h2 className="font-[var(--font-heading)] text-xl font-semibold text-[var(--color-plum-deep)] leading-snug">
           <Link
             href={`/blog/${slug}`}
-            className="hover:text-[var(--color-indigo-deep)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-indigo-deep)] rounded-sm"
+            className="hover:text-[var(--color-lavender)] transition-colors"
           >
             {title}
           </Link>
@@ -78,7 +86,7 @@ export default function BlogCard({
         {/* Published date */}
         <time
           dateTime={publishedAt.toISOString()}
-          className="text-xs text-[var(--color-charcoal)]/50"
+          className="text-xs text-[var(--color-charcoal)]/45"
         >
           {formatDate(publishedAt)}
         </time>

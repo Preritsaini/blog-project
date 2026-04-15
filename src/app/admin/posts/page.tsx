@@ -13,71 +13,84 @@ export default async function AdminPostsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="font-serif text-3xl font-semibold text-[var(--color-indigo-deep)]">
+      <div className="flex items-center justify-between mb-6 sm:mb-8">
+        <h1 className="font-[var(--font-heading)] text-2xl sm:text-3xl font-semibold text-[var(--color-plum-deep)]">
           Blog Posts
         </h1>
         <Link
           href="/admin/posts/new"
-          className="inline-flex items-center rounded-md bg-[var(--color-indigo-deep)] px-4 py-2 text-sm font-semibold text-[var(--color-off-white)] hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[var(--color-indigo-deep)]"
+          className="inline-flex items-center rounded-md bg-[var(--color-plum-deep)] px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-[var(--color-cream)] hover:opacity-90 transition-opacity"
         >
-          New Post
+          + New Post
         </Link>
       </div>
 
       {posts.length === 0 ? (
-        <p className="text-[var(--color-charcoal)]/60">No posts yet.</p>
+        <p className="text-[var(--color-charcoal)]/50 text-sm">No posts yet.</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-[var(--color-indigo-deep)]/10">
-          <table className="w-full text-sm">
-            <thead className="bg-[var(--color-indigo-deep)]/5 text-left">
-              <tr>
-                <th className="px-4 py-3 font-semibold text-[var(--color-charcoal)]">Title</th>
-                <th className="px-4 py-3 font-semibold text-[var(--color-charcoal)]">Published At</th>
-                <th className="px-4 py-3 font-semibold text-[var(--color-charcoal)]">Status</th>
-                <th className="px-4 py-3 font-semibold text-[var(--color-charcoal)]">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--color-indigo-deep)]/5">
-              {posts.map((post) => (
-                <tr key={post.id} className="bg-white hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-[var(--color-charcoal)]">
-                    {post.title}
-                  </td>
-                  <td className="px-4 py-3 text-[var(--color-charcoal)]/70">
-                    {post.publishedAt
-                      ? post.publishedAt.toDate().toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })
-                      : '—'}
-                  </td>
-                  <td className="px-4 py-3">
-                    {post.published ? (
-                      <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                        Published
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
-                        Draft
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 flex items-center gap-2">
-                    <Link
-                      href={`/admin/posts/${post.id}/edit`}
-                      className="text-sm text-[var(--color-indigo-deep)] hover:underline focus:outline-none focus:ring-2 focus:ring-[var(--color-indigo-deep)] rounded px-2 py-1"
-                    >
-                      Edit
-                    </Link>
-                    <ConfirmDelete id={post.id} onDelete={handleDelete} />
-                  </td>
+        <>
+          {/* Desktop table */}
+          <div className="hidden sm:block overflow-x-auto rounded-xl border border-[var(--color-lavender)]/12">
+            <table className="w-full text-sm">
+              <thead className="bg-[var(--color-mist)] text-left">
+                <tr>
+                  <th className="px-4 py-3 font-semibold text-[var(--color-charcoal)]">Title</th>
+                  <th className="px-4 py-3 font-semibold text-[var(--color-charcoal)]">Published At</th>
+                  <th className="px-4 py-3 font-semibold text-[var(--color-charcoal)]">Status</th>
+                  <th className="px-4 py-3 font-semibold text-[var(--color-charcoal)]">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-[var(--color-lavender)]/8">
+                {posts.map((post) => (
+                  <tr key={post.id} className="bg-white hover:bg-[var(--color-mist)]/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-[var(--color-charcoal)]">{post.title}</td>
+                    <td className="px-4 py-3 text-[var(--color-charcoal)]/60 text-xs">
+                      {post.publishedAt
+                        ? post.publishedAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                        : '—'}
+                    </td>
+                    <td className="px-4 py-3">
+                      {post.published ? (
+                        <span className="inline-flex rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Published</span>
+                      ) : (
+                        <span className="inline-flex rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">Draft</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 flex items-center gap-2">
+                      <Link href={`/admin/posts/${post.id}/edit`} className="text-xs text-[var(--color-lavender)] hover:underline px-2 py-1">Edit</Link>
+                      <ConfirmDelete id={post.id} onDelete={handleDelete} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile card list */}
+          <div className="sm:hidden flex flex-col gap-3">
+            {posts.map((post) => (
+              <div key={post.id} className="rounded-xl bg-white border border-[var(--color-lavender)]/12 p-4">
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <p className="font-medium text-[var(--color-plum-deep)] text-sm leading-snug">{post.title}</p>
+                  {post.published ? (
+                    <span className="flex-shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">Published</span>
+                  ) : (
+                    <span className="flex-shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">Draft</span>
+                  )}
+                </div>
+                <p className="text-xs text-[var(--color-charcoal)]/45 mb-3">
+                  {post.publishedAt
+                    ? post.publishedAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                    : 'No date'}
+                </p>
+                <div className="flex items-center gap-3">
+                  <Link href={`/admin/posts/${post.id}/edit`} className="text-xs font-semibold text-[var(--color-lavender)] hover:underline">Edit</Link>
+                  <ConfirmDelete id={post.id} onDelete={handleDelete} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )

@@ -11,6 +11,9 @@ export interface MediaItem {
 }
 
 function db() {
+  if (!adminApp) {
+    throw new Error('Firebase Admin SDK is not initialised. Check your .env.local file.')
+  }
   return getFirestore(adminApp)
 }
 

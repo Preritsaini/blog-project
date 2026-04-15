@@ -1,5 +1,6 @@
 import 'server-only'
 import { getFirestore } from 'firebase-admin/firestore'
+import { unstable_cache } from 'next/cache'
 import { adminApp } from '@/lib/firebase/admin'
 import {
   filterRecentPosts,
@@ -10,8 +11,19 @@ import {
 
 export type { BlogPost }
 
+/** Returns Firestore or null if Admin SDK isn't configured. */
 function db() {
   if (!adminApp) return null
+  return getFirestore(adminApp)
+}
+
+/** Returns Firestore or throws — use in admin-only paths. */
+function requireDb() {
+  if (!adminApp) {
+    throw new Error(
+      'Firebase Admin SDK is not initialised. Check your .env.local file.'
+    )
+  }
   return getFirestore(adminApp)
 }
 
@@ -34,72 +46,85 @@ function docToBlogPost(
   }
 }
 
-/** Fetches the 3 most recently published posts. */
-export async function getRecentPosts(limit = 3): Promise<BlogPost[]> {
-  const database = db()
-  if (!database) return []
-  const snap = await database
-    .collection('posts')
-    .where('published', '==', true)
-    .orderBy('publishedAt', 'desc')
-    .limit(limit)
-    .get()
-  return snap.docs.map(docToBlogPost)
-}
+// ─── Cached public fetchers ───────────────────────────────────────────────────
 
-/** Fetches all published posts ordered by publishedAt desc. */
-export async function getAllPosts(): Promise<BlogPost[]> {
-  const database = db()
-  if (!database) return []
-  const snap = await database
-    .collection('posts')
-    .where('published', '==', true)
-    .orderBy('publishedAt', 'desc')
-    .get()
-  return snap.docs.map(docToBlogPost)
-}
+export const getRecentPosts = unstable_cache(
+  async (limit = 3): Promise<BlogPost[]> => {
+    const database = db()
+    if (!database) return []
+    const snap = await database
+      .collection('posts')
+      .where('published', '==', true)
+      .orderBy('publishedAt', 'desc')
+      .limit(limit)
+      .get()
+    return snap.docs.map(docToBlogPost)
+  },
+  ['recent-posts'],
+  { tags: ['posts'], revalidate: 60 }
+)
 
-/** Fetches a single published post by slug. */
-export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  const database = db()
-  if (!database) return null
-  const snap = await database
-    .collection('posts')
-    .where('published', '==', true)
-    .where('slug', '==', slug)
-    .limit(1)
-    .get()
-  if (snap.empty) return null
-  return docToBlogPost(snap.docs[0])
-}
+export const getAllPosts = unstable_cache(
+  async (): Promise<BlogPost[]> => {
+    const database = db()
+    if (!database) return []
+    const snap = await database
+      .collection('posts')
+      .where('published', '==', true)
+      .orderBy('publishedAt', 'desc')
+      .get()
+    return snap.docs.map(docToBlogPost)
+  },
+  ['all-posts'],
+  { tags: ['posts'], revalidate: 60 }
+)
 
-/** Returns up to `limit` published posts sharing at least one tag with the given post. */
-export async function getRelatedPosts(post: BlogPost, limit = 3): Promise<BlogPost[]> {
-  const database = db()
-  if (!database) return []
-  const snap = await database
-    .collection('posts')
-    .where('published', '==', true)
-    .get()
-  const all = snap.docs.map(docToBlogPost)
-  return filterRelatedPosts(post, all, limit)
-}
+export const getPostBySlug = unstable_cache(
+  async (slug: string): Promise<BlogPost | null> => {
+    const database = db()
+    if (!database) return null
+    const snap = await database
+      .collection('posts')
+      .where('published', '==', true)
+      .where('slug', '==', slug)
+      .limit(1)
+      .get()
+    if (snap.empty) return null
+    return docToBlogPost(snap.docs[0])
+  },
+  ['post-by-slug'],
+  { tags: ['posts'], revalidate: 60 }
+)
 
-/** Fetches all posts (published + draft) for the admin list. */
+export const getRelatedPosts = unstable_cache(
+  async (post: BlogPost, limit = 3): Promise<BlogPost[]> => {
+    const database = db()
+    if (!database) return []
+    const snap = await database
+      .collection('posts')
+      .where('published', '==', true)
+      .get()
+    const all = snap.docs.map(docToBlogPost)
+    return filterRelatedPosts(post, all, limit)
+  },
+  ['related-posts'],
+  { tags: ['posts'], revalidate: 60 }
+)
+
+// ─── Admin-only fetchers (not cached, always fresh) ───────────────────────────
+
 export async function getAllPostsAdmin(): Promise<BlogPost[]> {
-  const snap = await db()
+  const snap = await requireDb()
     .collection('posts')
     .orderBy('publishedAt', 'desc')
     .get()
   return snap.docs.map(docToBlogPost)
 }
 
-/** Fetches a single post by Firestore document ID. */
 export async function getPostById(id: string): Promise<BlogPost | null> {
-  const doc = await db().collection('posts').doc(id).get()
+  const doc = await requireDb().collection('posts').doc(id).get()
   if (!doc.exists) return null
   return docToBlogPost(doc)
 }
 
-// Re-export pure helpers for consumers that need them
 export { filterRecentPosts, filterPublishedPosts, filterRelatedPosts }

@@ -2,6 +2,9 @@ import type { MetadataRoute } from 'next'
 import { getAllPosts } from '@/lib/firestore/posts'
 import { siteConfig } from '@/lib/config'
 
+// ─── ISR: regenerate sitemap every hour ──────────────────────────────────────
+export const revalidate = 3600
+
 export function buildSitemapEntries(
   slugs: string[],
   baseUrl: string

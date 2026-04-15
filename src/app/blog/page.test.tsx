@@ -26,9 +26,7 @@ describe('BlogListingPage — empty state', () => {
     const jsx = await BlogListingPage()
     render(jsx)
 
-    expect(
-      screen.getByText(/no posts available yet/i)
-    ).toBeInTheDocument()
+    expect(screen.getByText(/the first post is on its way/i)).toBeInTheDocument()
   })
 
   it('renders blog cards when posts exist', async () => {

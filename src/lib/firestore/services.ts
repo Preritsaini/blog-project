@@ -1,5 +1,6 @@
 import 'server-only'
 import { getFirestore } from 'firebase-admin/firestore'
+import { unstable_cache } from 'next/cache'
 import { adminApp } from '@/lib/firebase/admin'
 import { filterActiveServices, type Service } from './utils'
 
@@ -7,6 +8,13 @@ export type { Service }
 
 function db() {
   if (!adminApp) return null
+  return getFirestore(adminApp)
+}
+
+function requireDb() {
+  if (!adminApp) {
+    throw new Error('Firebase Admin SDK is not initialised. Check your .env.local file.')
+  }
   return getFirestore(adminApp)
 }
 
@@ -27,29 +35,29 @@ function docToService(
   }
 }
 
-/** Fetches services where active === true. */
-export async function getActiveServices(): Promise<Service[]> {
-  const database = db()
-  if (!database) return []
-  const snap = await database
-    .collection('services')
-    .where('active', '==', true)
-    .get()
-  return snap.docs.map(docToService)
-}
+export const getActiveServices = unstable_cache(
+  async (): Promise<Service[]> => {
+    const database = db()
+    if (!database) return []
+    const snap = await database
+      .collection('services')
+      .where('active', '==', true)
+      .get()
+    return snap.docs.map(docToService)
+  },
+  ['active-services'],
+  { tags: ['services'], revalidate: 60 }
+)
 
-/** Fetches all services for the admin list. */
 export async function getAllServicesAdmin(): Promise<Service[]> {
-  const snap = await db().collection('services').get()
+  const snap = await requireDb().collection('services').get()
   return snap.docs.map(docToService)
 }
 
-/** Fetches a single service by Firestore document ID. */
 export async function getServiceById(id: string): Promise<Service | null> {
-  const doc = await db().collection('services').doc(id).get()
+  const doc = await requireDb().collection('services').doc(id).get()
   if (!doc.exists) return null
   return docToService(doc)
 }
 
-// Re-export pure helper for consumers
 export { filterActiveServices }
