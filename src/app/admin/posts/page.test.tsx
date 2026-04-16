@@ -25,13 +25,6 @@ import AdminPostsPage from './page'
 
 const mockGetAllPostsAdmin = getAllPostsAdmin as jest.MockedFunction<typeof getAllPostsAdmin>
 
-function makeTimestamp(ms: number) {
-  return {
-    toDate: () => new Date(ms),
-    toMillis: () => ms,
-  } as unknown as import('firebase-admin/firestore').Timestamp
-}
-
 // Generate a post with a given unique id
 const postArb = (id: string) =>
   fc.record({
@@ -47,9 +40,9 @@ const postArb = (id: string) =>
     coverImage: fc.constant(''),
     tags: fc.array(fc.string({ minLength: 1, maxLength: 20 }), { maxLength: 5 }),
     published: fc.boolean(),
-    publishedAt: fc.integer({ min: 0, max: 2_000_000_000_000 }).map(makeTimestamp),
-    createdAt: fc.integer({ min: 0, max: 2_000_000_000_000 }).map(makeTimestamp),
-    updatedAt: fc.integer({ min: 0, max: 2_000_000_000_000 }).map(makeTimestamp),
+    publishedAt: fc.integer({ min: 0, max: 2_000_000_000_000 }),
+    createdAt: fc.integer({ min: 0, max: 2_000_000_000_000 }),
+    updatedAt: fc.integer({ min: 0, max: 2_000_000_000_000 }),
   })
 
 // Generate an array of posts with unique IDs
@@ -79,14 +72,16 @@ describe('AdminPostsPage — Property 13: renders all posts with required fields
         })
 
         // Published/Draft badge counts should match
+        // The page renders both a desktop table and a mobile card list,
+        // so each post produces 2 status badges total.
         const publishedCount = posts.filter((p) => p.published).length
         const draftCount = posts.filter((p) => !p.published).length
 
         const publishedBadges = container.querySelectorAll('.bg-green-100')
         const draftBadges = container.querySelectorAll('.bg-gray-100')
 
-        expect(publishedBadges).toHaveLength(publishedCount)
-        expect(draftBadges).toHaveLength(draftCount)
+        expect(publishedBadges).toHaveLength(publishedCount * 2)
+        expect(draftBadges).toHaveLength(draftCount * 2)
 
         unmount()
       }),

@@ -13,11 +13,6 @@ import {
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Build a mock Timestamp from milliseconds. */
-function ts(ms: number) {
-  return { toDate: () => new Date(ms), toMillis: () => ms } as unknown as import('firebase-admin/firestore').Timestamp
-}
-
 /** Arbitrary for a BlogPost. */
 const blogPostArb = (overrides?: Partial<BlogPost>) =>
   fc
@@ -30,9 +25,9 @@ const blogPostArb = (overrides?: Partial<BlogPost>) =>
       coverImage: fc.string(),
       tags: fc.array(fc.string({ minLength: 1 }), { minLength: 0, maxLength: 5 }),
       published: fc.boolean(),
-      publishedAt: fc.integer({ min: 0, max: 2_000_000_000_000 }).map(ts),
-      createdAt: fc.integer({ min: 0, max: 2_000_000_000_000 }).map(ts),
-      updatedAt: fc.integer({ min: 0, max: 2_000_000_000_000 }).map(ts),
+      publishedAt: fc.integer({ min: 0, max: 2_000_000_000_000 }),
+      createdAt: fc.integer({ min: 0, max: 2_000_000_000_000 }),
+      updatedAt: fc.integer({ min: 0, max: 2_000_000_000_000 }),
     })
     .map((p) => ({ ...p, ...overrides }) as BlogPost)
 
@@ -48,8 +43,8 @@ const serviceArb = fc.record({
   price: fc.string(),
   bookingLink: fc.string(),
   active: fc.boolean(),
-  createdAt: fc.integer({ min: 0, max: 2_000_000_000_000 }).map(ts),
-  updatedAt: fc.integer({ min: 0, max: 2_000_000_000_000 }).map(ts),
+  createdAt: fc.integer({ min: 0, max: 2_000_000_000_000 }),
+  updatedAt: fc.integer({ min: 0, max: 2_000_000_000_000 }),
 })
 
 // ---------------------------------------------------------------------------
@@ -85,7 +80,7 @@ describe('filterRecentPosts', () => {
           const result = filterRecentPosts(posts, 3)
           // All published posts sorted desc
           const allSorted = [...posts].sort(
-            (a, b) => b.publishedAt.toMillis() - a.publishedAt.toMillis()
+            (a, b) => b.publishedAt - a.publishedAt
           )
           const top3 = allSorted.slice(0, 3)
           expect(result.map((p) => p.id)).toEqual(top3.map((p) => p.id))
@@ -121,8 +116,8 @@ describe('filterPublishedPosts', () => {
       fc.property(fc.array(blogPostArb(), { minLength: 0, maxLength: 20 }), (posts) => {
         const result = filterPublishedPosts(posts)
         for (let i = 1; i < result.length; i++) {
-          expect(result[i - 1].publishedAt.toMillis()).toBeGreaterThanOrEqual(
-            result[i].publishedAt.toMillis()
+          expect(result[i - 1].publishedAt).toBeGreaterThanOrEqual(
+            result[i].publishedAt
           )
         }
       }),

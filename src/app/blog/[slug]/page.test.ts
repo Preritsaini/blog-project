@@ -17,13 +17,6 @@ import type { BlogPost } from '@/lib/firestore/utils'
 // Helpers
 // ---------------------------------------------------------------------------
 
-function ts(ms: number) {
-  return {
-    toDate: () => new Date(ms),
-    toMillis: () => ms,
-  } as unknown as import('firebase-admin/firestore').Timestamp
-}
-
 const nonEmptyString = fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0)
 
 const blogPostArb: fc.Arbitrary<BlogPost> = fc.record({
@@ -45,9 +38,9 @@ const blogPostArb: fc.Arbitrary<BlogPost> = fc.record({
     .map(([base, path]) => `${base}/${path}.jpg`),
   tags: fc.array(nonEmptyString, { minLength: 0, maxLength: 5 }),
   published: fc.constant(true),
-  publishedAt: fc.integer({ min: 1_000_000_000_000, max: 2_000_000_000_000 }).map(ts),
-  createdAt: fc.integer({ min: 1_000_000_000_000, max: 2_000_000_000_000 }).map(ts),
-  updatedAt: fc.integer({ min: 1_000_000_000_000, max: 2_000_000_000_000 }).map(ts),
+  publishedAt: fc.integer({ min: 1_000_000_000_000, max: 2_000_000_000_000 }),
+  createdAt: fc.integer({ min: 1_000_000_000_000, max: 2_000_000_000_000 }),
+  updatedAt: fc.integer({ min: 1_000_000_000_000, max: 2_000_000_000_000 }),
 })
 
 const siteUrl = 'https://example.com'

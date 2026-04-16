@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import BlogCard from '@/components/ui/BlogCard'
 import { getPostBySlug, getRelatedPosts, getAllPosts } from '@/lib/firestore/posts'
+import { readingTime } from '@/lib/readingTime'
 import { siteConfig } from '@/lib/config'
 import type { BlogPost } from '@/lib/firestore/utils'
 
@@ -111,14 +112,38 @@ export default async function BlogPostPage({
   const [relatedPosts] = await Promise.all([getRelatedPosts(post, 3)])
   const jsonLd = buildArticleJsonLd(post, siteConfig.url)
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: siteConfig.url },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteConfig.url}/blog` },
+      { '@type': 'ListItem', position: 3, name: post.title, item: `${siteConfig.url}/blog/${post.slug}` },
+    ],
+  }
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
 
       <article className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+        {/* Breadcrumb nav */}
+        <nav aria-label="Breadcrumb" className="mb-6 sm:mb-8">
+          <ol className="flex flex-wrap items-center gap-1.5 text-xs text-[var(--color-charcoal)]/45 list-none m-0 p-0">
+            <li><a href="/" className="hover:text-[var(--color-lavender)] transition-colors">Home</a></li>
+            <li aria-hidden="true">/</li>
+            <li><a href="/blog" className="hover:text-[var(--color-lavender)] transition-colors">Blog</a></li>
+            <li aria-hidden="true">/</li>
+            <li className="text-[var(--color-charcoal)]/70 truncate max-w-[200px]" aria-current="page">{post.title}</li>
+          </ol>
+        </nav>
         {/* Cover image */}
         {post.coverImage && (
           <div className="relative h-52 sm:h-72 lg:h-96 w-full overflow-hidden rounded-xl mb-8 sm:mb-10 shadow-md">
@@ -175,6 +200,10 @@ export default async function BlogPostPage({
               day: 'numeric',
             }).format(new Date(post.publishedAt))}
           </time>
+          <span className="text-[var(--color-charcoal)]/25">·</span>
+          <span className="text-sm text-[var(--color-charcoal)]/45">
+            {readingTime(post.body)}
+          </span>
         </div>
 
         {/* Body */}

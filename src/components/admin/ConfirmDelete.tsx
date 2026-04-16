@@ -35,7 +35,7 @@ export default function ConfirmDelete({
           <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl">
             <h2
               id="confirm-delete-title"
-              className="font-serif text-lg font-semibold text-[var(--color-indigo-deep)] mb-3"
+              className="font-[var(--font-heading)] text-lg font-semibold text-[var(--color-plum-deep)] mb-3"
             >
               Confirm Delete
             </h2>
@@ -46,7 +46,7 @@ export default function ConfirmDelete({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-md border border-[var(--color-charcoal)]/20 px-4 py-2 text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[var(--color-indigo-deep)]"
+                className="rounded-md border border-[var(--color-charcoal)]/20 px-4 py-2 text-sm hover:bg-[var(--color-mist)] focus:outline-none focus:ring-2 focus:ring-[var(--color-lavender)]"
               >
                 Cancel
               </button>

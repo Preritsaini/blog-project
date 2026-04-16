@@ -1,0 +1,42 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper: check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper: check if user is admin (you can add email check here)
+    function isAdmin() {
+      return isAuthenticated(); 
+      // Example for specific email:
+      // return isAuthenticated() && request.auth.token.email == 'your@email.com';
+    }
+
+    // --- Collections ---
+
+    // Posts: Anyone can read, only admin can write
+    match /posts/{postId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Services: Anyone can read, only admin can write
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Contacts: Anyone can create, only admin can read/update/delete
+    match /contacts/{contactId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Default: deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

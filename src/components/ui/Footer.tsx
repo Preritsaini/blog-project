@@ -19,9 +19,9 @@ export default function Footer() {
 
   return (
     <footer className="w-full bg-[var(--color-plum-deep)] text-[var(--color-cream)] mt-auto">
-      <div className="mx-auto max-w-6xl px-6 py-12 grid grid-cols-1 sm:grid-cols-3 gap-8">
+      <div className="mx-auto max-w-6xl px-6 py-12 grid grid-cols-1 sm:grid-cols-4 gap-8">
         {/* Brand */}
-        <div>
+        <div className="sm:col-span-1">
           <Link
             href="/"
             className="font-[var(--font-heading)] text-xl font-semibold text-[var(--color-gold)] hover:opacity-80 transition-opacity"
@@ -31,6 +31,12 @@ export default function Footer() {
           <p className="mt-2 text-sm text-[var(--color-cream)]/55 leading-relaxed">
             {siteConfig.tagline}
           </p>
+          <Link
+            href="/contact"
+            className="mt-4 inline-block rounded-md bg-[var(--color-sage)] px-4 py-2 text-xs font-semibold text-[var(--color-plum-deep)] hover:opacity-90 transition-opacity"
+          >
+            Book a Session
+          </Link>
         </div>
 
         {/* Nav links */}

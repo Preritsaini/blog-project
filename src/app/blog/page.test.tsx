@@ -39,18 +39,9 @@ describe('BlogListingPage — empty state', () => {
       coverImage: 'https://example.com/cover.jpg',
       tags: ['test'],
       published: true,
-      publishedAt: {
-        toDate: () => new Date('2024-01-01'),
-        toMillis: () => 1704067200000,
-      } as unknown as import('firebase-admin/firestore').Timestamp,
-      createdAt: {
-        toDate: () => new Date('2024-01-01'),
-        toMillis: () => 1704067200000,
-      } as unknown as import('firebase-admin/firestore').Timestamp,
-      updatedAt: {
-        toDate: () => new Date('2024-01-01'),
-        toMillis: () => 1704067200000,
-      } as unknown as import('firebase-admin/firestore').Timestamp,
+      publishedAt: 1704067200000,
+      createdAt: 1704067200000,
+      updatedAt: 1704067200000,
     }
 
     mockGetAllPosts.mockResolvedValue([mockPost])

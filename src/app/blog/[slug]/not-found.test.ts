@@ -52,18 +52,9 @@ describe('BlogPostPage — 404 behaviour', () => {
       coverImage: 'https://example.com/cover.jpg',
       tags: ['spirituality'],
       published: true,
-      publishedAt: {
-        toDate: () => new Date('2024-06-01'),
-        toMillis: () => 1717200000000,
-      } as unknown as import('firebase-admin/firestore').Timestamp,
-      createdAt: {
-        toDate: () => new Date('2024-06-01'),
-        toMillis: () => 1717200000000,
-      } as unknown as import('firebase-admin/firestore').Timestamp,
-      updatedAt: {
-        toDate: () => new Date('2024-06-01'),
-        toMillis: () => 1717200000000,
-      } as unknown as import('firebase-admin/firestore').Timestamp,
+      publishedAt: 1717200000000,
+      createdAt: 1717200000000,
+      updatedAt: 1717200000000,
     }
 
     const { getRelatedPosts } = jest.requireMock('@/lib/firestore/posts')
