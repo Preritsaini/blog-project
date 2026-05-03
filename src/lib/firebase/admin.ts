@@ -10,7 +10,7 @@ function getAdminApp(): App | null {
 
   if (!projectId || !clientEmail || !privateKey) {
     console.warn(
-      '[Soul Compass] Firebase Admin SDK env vars missing.\n' +
+      '[AhanaFlow] Firebase Admin SDK env vars missing.\n' +
       'Copy .env.local.example → .env.local and fill in your Firebase credentials.\n' +
       'Required: FIREBASE_ADMIN_PROJECT_ID, FIREBASE_ADMIN_CLIENT_EMAIL, FIREBASE_ADMIN_PRIVATE_KEY'
     )
@@ -20,7 +20,7 @@ function getAdminApp(): App | null {
   try {
     return initializeApp({ credential: cert({ projectId, clientEmail, privateKey }) })
   } catch (err) {
-    console.error('[Soul Compass] Firebase Admin SDK init failed:', err)
+    console.error('[AhanaFlow] Firebase Admin SDK init failed:', err)
     return null
   }
 }

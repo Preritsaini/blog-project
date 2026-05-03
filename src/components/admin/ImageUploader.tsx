@@ -1,15 +1,14 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { uploadFile } from '@/lib/firebase/storage'
+import { UploadButton } from '@/components/ui/Icons'
+import ClientOnly from '@/components/ui/ClientOnly'
 
 interface ImageUploaderProps {
-  /** Current image URL (shown as preview) */
   value: string
-  /** Called with the new public download URL after upload */
   onChange: (url: string) => void
-  /** Storage folder, defaults to 'media' */
   folder?: string
   label?: string
 }
@@ -26,6 +25,7 @@ export default function ImageUploader({
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
+    console.log('[ImageUploader] File selected:', file?.name)
     if (!file) return
 
     if (!file.type.startsWith('image/')) {
@@ -43,11 +43,12 @@ export default function ImageUploader({
     try {
       const { url } = await uploadFile(file, folder, setProgress)
       onChange(url)
-    } catch {
-      setError('Upload failed. Please try again.')
+    } catch (err: any) {
+      console.error('[ImageUploader] Upload failed:', err)
+      setError(`Upload failed: ${err.message || 'Please try again.'}`)
     } finally {
       setProgress(null)
-      // reset so the same file can be re-selected
+      // Safely reset the input so the same file can be re-selected
       if (inputRef.current) inputRef.current.value = ''
     }
   }
@@ -71,27 +72,28 @@ export default function ImageUploader({
       )}
 
       {/* Upload button */}
-      <label className="flex cursor-pointer items-center gap-2 self-start rounded-md border border-[var(--color-indigo-deep)]/30 bg-white px-4 py-2 text-sm font-medium text-[var(--color-indigo-deep)] hover:bg-[var(--color-indigo-deep)]/5 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12V4m0 0L8 8m4-4l4 4" />
-        </svg>
-        {value ? 'Replace image' : 'Upload image'}
-        <input
+      <ClientOnly>
+        <UploadButton
           ref={inputRef}
-          type="file"
-          accept="image/*"
-          className="sr-only"
+          label={value ? 'Replace image' : 'Upload image'}
+          className="flex cursor-pointer items-center gap-2 self-start rounded-md border border-[var(--color-indigo-deep)]/30 bg-white px-4 py-2 text-sm font-medium text-[var(--color-indigo-deep)] hover:bg-[var(--color-indigo-deep)]/5 transition-colors"
           onChange={handleFile}
+          disabled={progress !== null}
         />
-      </label>
+      </ClientOnly>
 
       {/* Progress bar */}
       {progress !== null && (
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-charcoal)]/10">
-          <div
-            className="h-full bg-[var(--color-indigo-deep)] transition-all"
-            style={{ width: `${progress}%` }}
-          />
+        <div className="mt-2">
+          <p className="mb-1 text-xs font-medium text-[var(--color-indigo-deep)]">
+            Uploading… {progress}%
+          </p>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--color-indigo-deep)]/10">
+            <div
+              className="h-full bg-[var(--color-indigo-deep)] transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
       )}
 

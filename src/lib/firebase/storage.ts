@@ -49,6 +49,8 @@ export async function uploadFile(
  * Delete a file from Firebase Storage by its storage path.
  */
 export async function deleteFile(path: string): Promise<void> {
+  console.log('[Storage] Deleting file:', path)
   const storageRef = ref(storage, path)
   await deleteObject(storageRef)
+  console.log('[Storage] File deleted successfully.')
 }

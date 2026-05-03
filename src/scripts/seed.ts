@@ -59,11 +59,11 @@ async function seed() {
   // 2. Seed Site Settings
   const settingsRef = db.doc('settings/site')
   const defaultSettings = {
-    siteName: 'Soul Compass',
+    siteName: 'AhanaFlow',
     tagline: 'Psychic Coaching & Spiritual Guidance',
     coachName: 'Prateeksha',
     coachPhoto: '/images/coach-portrait.png',
-    twitterHandle: '@soulcompassco',
+    twitterHandle: '@ahanaflow',
     heroHeadline: 'Stop Searching for Answers.',
     heroSubheadline: 'Start Hearing Your Own.',
     heroBody: "You already know more than you think. Prateeksha's psychic coaching sessions help you cut through the noise — and finally trust the voice that's been trying to reach you.",

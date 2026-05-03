@@ -39,11 +39,11 @@ export interface SiteSettings {
 }
 
 export const defaultSettings: SiteSettings = {
-  siteName: 'Soul Compass',
+  siteName: 'AhanaFlow',
   tagline: 'Psychic Coaching & Spiritual Guidance',
   coachName: 'Prateeksha',
   coachPhoto: '',
-  twitterHandle: '@soulcompassco',
+  twitterHandle: '@ahanaflow',
 
   heroHeadline: 'Stop Searching for Answers.',
   heroSubheadline: 'Start Hearing Your Own.',
@@ -60,9 +60,9 @@ export const defaultSettings: SiteSettings = {
   credentials:
     'Certified Spiritual Life Coach\nReiki Master & Energy Healer\nTarot & Astrology Practitioner\n10+ Years of Practice\n500+ Sessions Delivered',
 
-  instagramUrl: 'https://instagram.com/soulcompassco',
-  twitterUrl: 'https://twitter.com/soulcompassco',
-  facebookUrl: 'https://facebook.com/soulcompassco',
+  instagramUrl: 'https://instagram.com/ahanaflow',
+  twitterUrl: 'https://twitter.com/ahanaflow',
+  facebookUrl: 'https://facebook.com/ahanaflow',
 
   colorCream: '#F7F3EE',
   colorMist: '#EEE8F2',
@@ -73,7 +73,7 @@ export const defaultSettings: SiteSettings = {
   colorCharcoal: '#2C2433',
 
   siteDescription:
-    'Soul Compass offers transformative psychic coaching with Prateeksha — a certified spiritual life coach, Reiki master, and intuitive healer. Discover clarity, healing, and purpose through personalised readings and one-on-one sessions.',
+    'AhanaFlow offers transformative psychic coaching with Prateeksha — a certified spiritual life coach, Reiki master, and intuitive healer. Discover clarity, healing, and purpose through personalised readings and one-on-one sessions.',
   ogImage: '',
 }
 

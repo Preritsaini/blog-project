@@ -8,19 +8,19 @@ export const dynamic = 'force-static'
 export const metadata: Metadata = {
   title: 'Book a Psychic Coaching Session — Contact Prateeksha',
   description:
-    'Ready to get clarity? Reach out to Prateeksha at Soul Compass to book a psychic coaching session, ask a question, or find out which service is right for you. Online sessions available worldwide.',
+    'Ready to get clarity? Reach out to Prateeksha at AhanaFlow to book a psychic coaching session, ask a question, or find out which service is right for you. Online sessions available worldwide.',
   alternates: { canonical: `${siteConfig.url}/contact` },
   openGraph: {
-    title: 'Contact Prateeksha | Soul Compass',
+    title: 'Contact Prateeksha | AhanaFlow',
     description:
       'Book a psychic coaching session or ask a question. Online sessions available worldwide.',
     url: `${siteConfig.url}/contact`,
     type: 'website',
-    images: [{ url: siteConfig.ogImage, width: 1200, height: 630, alt: 'Contact Soul Compass' }],
+    images: [{ url: siteConfig.ogImage, width: 1200, height: 630, alt: 'Contact AhanaFlow' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Contact Prateeksha | Soul Compass',
+    title: 'Contact Prateeksha | AhanaFlow',
     description: 'Book a psychic coaching session or ask a question. Online sessions available worldwide.',
     images: [siteConfig.ogImage],
   },

@@ -7,7 +7,7 @@ export interface MediaItem {
   url: string
   storagePath: string
   name: string
-  uploadedAt: Timestamp
+  uploadedAt: number
 }
 
 function db() {
@@ -29,7 +29,7 @@ export async function getAllMedia(): Promise<MediaItem[]> {
       url: d.url,
       storagePath: d.storagePath,
       name: d.name,
-      uploadedAt: d.uploadedAt,
+      uploadedAt: d.uploadedAt?.toMillis?.() ?? Date.now(),
     }
   })
 }

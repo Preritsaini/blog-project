@@ -2,6 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import ClientOnly from '@/components/ui/ClientOnly'
+import { MenuIcon, CloseIcon } from '@/components/ui/Icons'
 
 const navLinks = [
   { href: '/about',    label: 'About'    },
@@ -12,6 +15,9 @@ const navLinks = [
 
 export default function NavBar() {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+
+  if (pathname.startsWith('/admin')) return null
 
   return (
     <header className="w-full bg-[var(--color-plum-deep)] text-[var(--color-cream)] sticky top-0 z-40 shadow-sm">
@@ -29,10 +35,10 @@ export default function NavBar() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src="/images/logo.png" 
-            alt="Soul Compass Logo" 
+            alt="AhanaFlow Logo" 
             className="w-10 h-10 object-contain mix-blend-screen scale-[1.2]" 
           />
-          Soul Compass
+          AhanaFlow
         </Link>
 
         {/* Desktop links */}
@@ -66,15 +72,9 @@ export default function NavBar() {
           aria-controls="mobile-menu"
           onClick={() => setOpen((v) => !v)}
         >
-          {open ? (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
+          <ClientOnly>
+            {open ? <CloseIcon /> : <MenuIcon />}
+          </ClientOnly>
         </button>
       </nav>
 

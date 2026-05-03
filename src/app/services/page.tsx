@@ -10,19 +10,19 @@ export const revalidate = 60
 export const metadata: Metadata = {
   title: 'Psychic Coaching Services — Book a Session with Prateeksha',
   description:
-    "Explore Soul Compass's psychic coaching services — intuitive readings, energy healing, tarot, and spiritual life coaching with Prateeksha. Personalised sessions available online worldwide.",
+    "Explore AhanaFlow's psychic coaching services — intuitive readings, energy healing, tarot, and spiritual life coaching with Prateeksha. Personalised sessions available online worldwide.",
   alternates: { canonical: `${siteConfig.url}/services` },
   openGraph: {
-    title: 'Psychic Coaching Services | Soul Compass',
+    title: 'Psychic Coaching Services | AhanaFlow',
     description:
       "Intuitive readings, energy healing, tarot, and spiritual life coaching with Prateeksha. Book your personalised session today.",
     url: `${siteConfig.url}/services`,
     type: 'website',
-    images: [{ url: siteConfig.ogImage, width: 1200, height: 630, alt: 'Soul Compass Coaching Services' }],
+    images: [{ url: siteConfig.ogImage, width: 1200, height: 630, alt: 'AhanaFlow Coaching Services' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Psychic Coaching Services | Soul Compass',
+    title: 'Psychic Coaching Services | AhanaFlow',
     description:
       "Intuitive readings, energy healing, tarot, and spiritual life coaching with Prateeksha.",
     images: [siteConfig.ogImage],

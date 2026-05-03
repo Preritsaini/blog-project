@@ -1,10 +1,12 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { uploadFile, deleteFile } from '@/lib/firebase/storage'
 import { saveMedia, deleteMedia } from '@/actions/media'
 import type { MediaItem } from '@/lib/firestore/media'
+import { UploadButton } from '@/components/ui/Icons'
+import ClientOnly from '@/components/ui/ClientOnly'
 
 interface Props {
   initialItems: MediaItem[]
@@ -20,6 +22,7 @@ export default function MediaLibraryClient({ initialItems }: Props) {
 
   async function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? [])
+    console.log('[MediaLibrary] Files selected:', files.length)
     if (!files.length) return
 
     setError(null)
@@ -45,28 +48,42 @@ export default function MediaLibraryClient({ initialItems }: Props) {
             url,
             storagePath: path,
             name: file.name,
-            uploadedAt: { toDate: () => new Date(), toMillis: () => Date.now() } as never,
+            uploadedAt: Date.now(),
           },
           ...prev,
         ])
-      } catch {
+        console.log('[MediaLibrary] Successfully saved:', file.name)
+      } catch (err) {
+        console.error('[MediaLibrary] Failed to process:', file.name, err)
         setError(`Failed to upload ${file.name}.`)
       }
     }
 
     setUploading(false)
     setProgress(0)
+    // Safely reset the input so the same file can be re-selected
     if (inputRef.current) inputRef.current.value = ''
   }
 
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<MediaItem | null>(null)
+
   async function handleDelete(item: MediaItem) {
-    if (!confirm(`Delete "${item.name}"? This cannot be undone.`)) return
+    setConfirmDelete(null)
+    setDeletingId(item.id)
+    console.log('[MediaLibrary] Deleting item:', item.id, item.storagePath)
     try {
+      console.log('[MediaLibrary] Deleting from storage...')
       await deleteFile(item.storagePath)
+      console.log('[MediaLibrary] Deleting from firestore...')
       await deleteMedia(item.id, item.storagePath)
       setItems((prev) => prev.filter((i) => i.id !== item.id))
-    } catch {
-      setError('Failed to delete image.')
+      console.log('[MediaLibrary] Delete successful.')
+    } catch (err: any) {
+      console.error('[MediaLibrary] Delete failed:', err)
+      setError(`Failed to delete image: ${err.message || 'Unknown error'}`)
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -78,35 +95,56 @@ export default function MediaLibraryClient({ initialItems }: Props) {
 
   return (
     <div>
+      {/* Custom Confirmation Modal */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-2xl">
+            <h3 className="text-lg font-semibold text-[var(--color-plum-deep)] mb-2">Delete Image?</h3>
+            <p className="text-sm text-[var(--color-charcoal)]/70 mb-6">
+              Are you sure you want to delete "{confirmDelete.name}"? This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(null)}
+                className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDelete(confirmDelete)}
+                className="flex-1 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-serif text-3xl font-semibold text-[var(--color-indigo-deep)]">
           Media Library
         </h1>
 
-        <label className="flex cursor-pointer items-center gap-2 rounded-md bg-[var(--color-indigo-deep)] px-4 py-2 text-sm font-semibold text-[var(--color-off-white)] hover:opacity-90 transition-opacity">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12V4m0 0L8 8m4-4l4 4" />
-          </svg>
-          Upload Images
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            className="sr-only"
-            onChange={handleFiles}
-            disabled={uploading}
-          />
-        </label>
+        <UploadButton
+          ref={inputRef}
+          label="Upload Images"
+          className="flex cursor-pointer items-center gap-2 rounded-md bg-[var(--color-indigo-deep)] px-4 py-2 text-sm font-semibold text-[var(--color-off-white)] hover:opacity-90 transition-opacity"
+          onChange={handleFiles}
+          disabled={uploading}
+          multiple
+        />
       </div>
 
       {/* Upload progress */}
       {uploading && (
         <div className="mb-6">
-          <p className="text-sm text-[var(--color-charcoal)]/70 mb-1">Uploading… {progress}%</p>
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-charcoal)]/10">
+          <p className="text-sm font-medium text-[var(--color-indigo-deep)] mb-1">Uploading… {progress}%</p>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--color-indigo-deep)]/10">
             <div
-              className="h-full bg-[var(--color-indigo-deep)] transition-all"
+              className="h-full bg-[var(--color-indigo-deep)] transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -129,10 +167,13 @@ export default function MediaLibraryClient({ initialItems }: Props) {
           {items.map((item) => (
             <div
               key={item.id}
-              className="group relative overflow-hidden rounded-lg border border-[var(--color-charcoal)]/10 bg-white"
+              className={`group relative overflow-hidden rounded-lg border border-[var(--color-charcoal)]/10 bg-white ${
+                deletingId === item.id ? 'opacity-50 grayscale' : ''
+              }`}
             >
               <div className="relative h-40 w-full">
                 <Image
+                  suppressHydrationWarning
                   src={item.url}
                   alt={item.name}
                   fill
@@ -145,17 +186,26 @@ export default function MediaLibraryClient({ initialItems }: Props) {
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   type="button"
-                  onClick={() => copyUrl(item.url)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    copyUrl(item.url)
+                  }}
                   className="rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-[var(--color-indigo-deep)] hover:bg-gray-100"
                 >
                   {copied === item.url ? 'Copied!' : 'Copy URL'}
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleDelete(item)}
-                  className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+                  disabled={deletingId === item.id}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    setConfirmDelete(item)
+                  }}
+                  className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:bg-gray-400"
                 >
-                  Delete
+                  {deletingId === item.id ? 'Deleting...' : 'Delete'}
                 </button>
               </div>
 
@@ -169,3 +219,4 @@ export default function MediaLibraryClient({ initialItems }: Props) {
     </div>
   )
 }
+

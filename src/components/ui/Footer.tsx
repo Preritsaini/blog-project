@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { siteConfig } from '@/lib/config'
 
 const navLinks = [
@@ -15,7 +18,10 @@ const socialLinks = [
 ]
 
 export default function Footer() {
+  const pathname = usePathname()
   const year = new Date().getFullYear()
+
+  if (pathname.startsWith('/admin')) return null
 
   return (
     <footer className="w-full bg-[var(--color-plum-deep)] text-[var(--color-cream)] mt-auto">

@@ -35,7 +35,8 @@ export async function verifySession(): Promise<import('firebase-admin/auth').Dec
   try {
     const decoded = await getAuth(adminApp).verifySessionCookie(cookie, true)
     return decoded
-  } catch {
+  } catch (err) {
+    console.error('Session verification failed:', err)
     return null
   }
 }

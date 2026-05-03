@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     'spiritual guidance',
     'online psychic',
     'Prateeksha',
-    'Soul Compass',
+    'AhanaFlow',
   ],
   authors: [{ name: siteConfig.coachName, url: siteConfig.url }],
   creator: siteConfig.coachName,

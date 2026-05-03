@@ -39,6 +39,7 @@ export default function BlogCard({
         <div className="relative h-48 w-full overflow-hidden bg-[var(--color-lavender)]/10">
           {hasImage ? (
             <Image
+              suppressHydrationWarning
               src={coverImage}
               alt={title}
               fill
@@ -85,6 +86,7 @@ export default function BlogCard({
 
         {/* Published date */}
         <time
+          suppressHydrationWarning
           dateTime={new Date(publishedAt).toISOString()}
           className="text-xs text-[var(--color-charcoal)]/45"
         >

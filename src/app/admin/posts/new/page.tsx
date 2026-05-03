@@ -1,11 +1,13 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useActionState, useState } from 'react'
 import { createPost, type PostFormState } from '@/actions/posts'
 import { generateSlug } from '@/lib/slug'
-import PostEditor from '@/components/admin/PostEditor'
-import ImageUploader from '@/components/admin/ImageUploader'
 import SubmitButton from '@/components/ui/SubmitButton'
+
+const PostEditor = dynamic(() => import('@/components/admin/PostEditor'), { ssr: false })
+const ImageUploader = dynamic(() => import('@/components/admin/ImageUploader'), { ssr: false })
 
 const initialState: PostFormState = {}
 

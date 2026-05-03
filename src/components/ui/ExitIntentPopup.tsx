@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 /**
  * Exit-intent popup — fires once per session when the mouse
@@ -13,8 +14,10 @@ import Link from 'next/link'
  */
 export default function ExitIntentPopup() {
   const [show, setShow] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
+    if (pathname.startsWith('/admin')) return
     if (sessionStorage.getItem('exit-popup-dismissed')) return
 
     let timer: ReturnType<typeof setTimeout>

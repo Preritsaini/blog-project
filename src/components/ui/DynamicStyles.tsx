@@ -24,5 +24,10 @@ export default function DynamicStyles({ settings: s }: Props) {
     }
   `.trim()
 
-  return <style dangerouslySetInnerHTML={{ __html: css }} />
+  return (
+    <style
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{ __html: css }}
+    />
+  )
 }

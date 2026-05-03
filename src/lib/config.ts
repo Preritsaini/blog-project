@@ -3,24 +3,24 @@
  */
 
 export const siteConfig = {
-  name: 'Soul Compass',
+  name: 'AhanaFlow',
   coachName: 'Prateeksha',
   tagline: 'Psychic Coaching & Spiritual Guidance',
 
   description:
-    'Soul Compass offers transformative psychic coaching with Prateeksha — a certified spiritual life coach, Reiki master, and intuitive healer. Discover clarity, healing, and purpose through personalised readings and one-on-one sessions.',
+    'AhanaFlow offers transformative psychic coaching with Prateeksha — a certified spiritual life coach, Reiki master, and intuitive healer. Discover clarity, healing, and purpose through personalised readings and one-on-one sessions.',
 
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://soulcompass.co',
-  ogImage: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://soulcompass.co'}/og-image.png`,
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ahanaflow.com',
+  ogImage: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ahanaflow.com'}/og-image.png`,
 
   author: 'Prateeksha',
-  twitterHandle: '@soulcompassco',
+  twitterHandle: '@ahanaflow',
   locale: 'en_US',
 
   links: {
-    instagram: 'https://instagram.com/soulcompassco',
-    twitter: 'https://twitter.com/soulcompassco',
-    facebook: 'https://facebook.com/soulcompassco',
+    instagram: 'https://instagram.com/ahanaflow',
+    twitter: 'https://twitter.com/ahanaflow',
+    facebook: 'https://facebook.com/ahanaflow',
   },
 
   about: {

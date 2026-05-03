@@ -6,14 +6,17 @@ interface SubmitButtonProps {
   label?: string
   pendingLabel?: string
   className?: string
+  isPending?: boolean
 }
 
 export default function SubmitButton({
   label = 'Submit',
   pendingLabel = 'Submitting…',
   className,
+  isPending,
 }: SubmitButtonProps) {
-  const { pending } = useFormStatus()
+  const { pending: formPending } = useFormStatus()
+  const pending = isPending ?? formPending
 
   return (
     <button

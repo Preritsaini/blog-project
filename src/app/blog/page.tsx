@@ -13,16 +13,16 @@ export const metadata: Metadata = {
     'Read Prateeksha\'s blog for honest, grounded writing on psychic development, tarot, energy healing, astrology, and navigating life\'s big questions. New posts regularly.',
   alternates: { canonical: `${siteConfig.url}/blog` },
   openGraph: {
-    title: 'Spiritual Blog | Soul Compass',
+    title: 'Spiritual Blog | AhanaFlow',
     description:
       'Honest, grounded writing on psychic development, tarot, energy healing, and navigating life\'s big questions.',
     url: `${siteConfig.url}/blog`,
     type: 'website',
-    images: [{ url: siteConfig.ogImage, width: 1200, height: 630, alt: 'Soul Compass Blog' }],
+    images: [{ url: siteConfig.ogImage, width: 1200, height: 630, alt: 'AhanaFlow Blog' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Spiritual Blog | Soul Compass',
+    title: 'Spiritual Blog | AhanaFlow',
     description:
       'Honest, grounded writing on psychic development, tarot, energy healing, and navigating life\'s big questions.',
     images: [siteConfig.ogImage],

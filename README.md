@@ -1,8 +1,8 @@
-# 🧭 Soul Compass — Spiritual & Psychic Coaching
+# 🧭 AhanaFlow — Spiritual & Psychic Coaching
 
 A premium, modern web application for a spiritual coach, built with **Next.js 15**, **Firebase**, and **Tailwind CSS**. This platform provides a serene, mystical user experience designed to showcase services, share wisdom through a blog, and facilitate client bookings.
 
-![Soul Compass Banner](/images/hero-bg.png)
+![AhanaFlow Banner](/images/hero-bg.png)
 
 ## ✨ Key Features
 

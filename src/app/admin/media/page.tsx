@@ -1,7 +1,7 @@
 import { getAllMedia } from '@/lib/firestore/media'
-import MediaLibraryClient from './MediaLibraryClient'
+import MediaLibraryWrapper from './MediaLibraryWrapper'
 
 export default async function AdminMediaPage() {
   const items = await getAllMedia()
-  return <MediaLibraryClient initialItems={items} />
+  return <MediaLibraryWrapper initialItems={items} />
 }

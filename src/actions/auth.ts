@@ -3,34 +3,16 @@
 import { redirect } from 'next/navigation'
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { app } from '@/lib/firebase/client'
-import { createSession, deleteSession } from '@/lib/session'
+import { createSession, deleteSession, verifySession } from '@/lib/session'
+import { getAuth as getAdminAuth } from 'firebase-admin/auth'
+import { adminApp } from '@/lib/firebase/admin'
 
-export async function login(
-  _prevState: { error?: string },
-  formData: FormData
-): Promise<{ error?: string }> {
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-
+export async function login(idToken: string): Promise<void> {
   try {
-    const clientAuth = getAuth(app)
-    const userCredential = await signInWithEmailAndPassword(clientAuth, email, password)
-    const idToken = await userCredential.user.getIdToken()
     await createSession(idToken)
   } catch (err: unknown) {
-    const code = (err as { code?: string })?.code ?? ''
-    // Map all Firebase Auth errors to a generic message to avoid leaking info
-    if (
-      code.startsWith('auth/') ||
-      code === 'auth/wrong-password' ||
-      code === 'auth/user-not-found' ||
-      code === 'auth/invalid-credential' ||
-      code === 'auth/invalid-email' ||
-      code === 'auth/too-many-requests'
-    ) {
-      return { error: 'Invalid email or password' }
-    }
-    return { error: 'Invalid email or password' }
+    console.error('Session creation failed:', err)
+    throw new Error('Authentication failed')
   }
 
   redirect('/admin')
@@ -39,4 +21,17 @@ export async function login(
 export async function logout(): Promise<never> {
   await deleteSession()
   redirect('/admin/login')
+}
+
+export async function getCustomToken(): Promise<string | null> {
+  const session = await verifySession()
+  if (!session || !adminApp) return null
+
+  try {
+    const token = await getAdminAuth(adminApp).createCustomToken(session.uid)
+    return token
+  } catch (err) {
+    console.error('Failed to create custom token:', err)
+    return null
+  }
 }

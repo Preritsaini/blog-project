@@ -14,9 +14,12 @@ const navLinks = [
   { href: '/admin/settings', label: 'Settings'  },
 ]
 
+import AuthSync from '@/components/admin/AuthSync'
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[var(--color-mist)]">
+      <AuthSync />
       <header className="bg-[var(--color-plum-deep)] text-[var(--color-cream)] sticky top-0 z-40 shadow-md">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-6">
@@ -24,7 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               href="/admin"
               className="font-[var(--font-heading)] text-lg font-semibold text-[var(--color-gold)]"
             >
-              Soul Compass
+              AhanaFlow
             </Link>
             <nav className="hidden sm:flex items-center gap-1">
               {navLinks.map(({ href, label }) => (
