@@ -92,10 +92,21 @@ export async function updatePost(
   if (!result.success) return { errors: result.error.flatten().fieldErrors }
 
   try {
-    await db().collection('posts').doc(id).update({
+    const docRef = db().collection('posts').doc(id)
+    const docSnap = await docRef.get()
+    const existingData = docSnap.data()
+
+    const updates: any = {
       ...result.data,
       updatedAt: Timestamp.now(),
-    })
+    }
+
+    // If publishing now and was not published before (or missing publishedAt), set it
+    if (result.data.published && !existingData?.publishedAt) {
+      updates.publishedAt = Timestamp.now()
+    }
+
+    await docRef.update(updates)
   } catch {
     return { serverError: 'Something went wrong. Please try again.' }
   }

@@ -1,6 +1,6 @@
 // Feature: prateeksha-psychic-coach, Property 12
 import * as fc from 'fast-check'
-import { shouldRedirectToLogin } from './lib/middleware-utils'
+import { shouldRedirectToLogin } from './lib/proxy-utils'
 
 /**
  * Property 12: Unauthenticated requests to /admin/* are redirected

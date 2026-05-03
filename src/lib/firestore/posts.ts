@@ -40,7 +40,7 @@ function docToBlogPost(
     coverImage: data.coverImage,
     tags: data.tags ?? [],
     published: data.published,
-    publishedAt: data.publishedAt?.toMillis?.() ?? 0,
+    publishedAt: data.publishedAt?.toMillis?.() ?? data.createdAt?.toMillis?.() ?? 0,
     createdAt: data.createdAt?.toMillis?.() ?? 0,
     updatedAt: data.updatedAt?.toMillis?.() ?? 0,
   }

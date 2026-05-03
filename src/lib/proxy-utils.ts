@@ -1,5 +1,5 @@
 /**
- * Pure function: determines whether the middleware should redirect to /admin/login.
+ * Pure function: determines whether the proxy should redirect to /admin/login.
  * Extracted for unit/property testing without Next.js internals.
  *
  * Returns true when the request should be redirected to /admin/login.

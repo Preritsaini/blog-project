@@ -27,15 +27,6 @@ export default function SocialProofTicker() {
         ))}
       </div>
 
-      <style>{`
-        @keyframes ticker {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-        @media (prefers-reduced-motion: no-preference) {
-          .ticker-track { animation: ticker 30s linear infinite; }
-        }
-      `}</style>
     </div>
   )
 }

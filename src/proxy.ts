@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { shouldRedirectToLogin } from './lib/middleware-utils'
+import { shouldRedirectToLogin } from './lib/proxy-utils'
 
 const SESSION_COOKIE_NAME = '__session'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   
   // Check for session cookie existence
@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
-// Configure which paths the middleware runs on
+// Configure which paths the proxy runs on
 export const config = {
   matcher: [
     /*
