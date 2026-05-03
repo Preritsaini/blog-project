@@ -6,12 +6,18 @@ function getAdminApp(): App | null {
 
   const projectId   = process.env.FIREBASE_ADMIN_PROJECT_ID
   const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL
-  const privateKey  = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n')
+  let privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY
+  
+  if (privateKey) {
+    // Handle cases where the key might be wrapped in quotes
+    privateKey = privateKey.replace(/^['"]|['"]$/g, '')
+    // Handle both literal newlines and escaped \n characters
+    privateKey = privateKey.replace(/\\n/g, '\n')
+  }
 
   if (!projectId || !clientEmail || !privateKey) {
     console.warn(
-      '[AhanaFlow] Firebase Admin SDK env vars missing.\n' +
-      'Copy .env.local.example → .env.local and fill in your Firebase credentials.\n' +
+      '[AhanaFlow] Firebase Admin SDK env vars missing or incomplete.\n' +
       'Required: FIREBASE_ADMIN_PROJECT_ID, FIREBASE_ADMIN_CLIENT_EMAIL, FIREBASE_ADMIN_PRIVATE_KEY'
     )
     return null
