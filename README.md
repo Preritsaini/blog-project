@@ -65,4 +65,3 @@ This project features custom-generated AI assets located in `/public/images/`:
 
 ---
 
-*Crafted with ✨ by Antigravity*
